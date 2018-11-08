@@ -1,0 +1,38 @@
+
+server:
+  port: @server.port@
+  error:
+    whitelabel:
+      enabled: false
+  tomcat:
+    max-threads: 2000
+    accept-count: 2000
+    max-connections: 4000
+    min-spare-threads: 25
+  connection-timeout: 5s
+
+mybatis:
+  config-location: classpath:mybatis/mybatis-config.xml
+  mapper-locations: classpath:mybatis/mapper/*.xml
+
+
+#
+# datasource
+#
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url:  @thingtrust.token.datasource.master.url@
+    username: @thingtrust.token.datasource.master.username@
+    password: @thingtrust.token.datasource.master.password@
+    min-idle: 0
+    max-active: 10
+    data-source-properties:
+      useSSL: false
+      characterEncoding: UTF-8
+      autoReconnect: true
+      rewriteBatchedStatements: true
+
+
+
+

@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.thingtrust.trend.data.ContactRepository">
+										  <!-- CodeBuilder  Generated-->
+  <resultMap id="ContactMap" type="com.thingtrust.trend.domain.Contact">
+  					 <id column="id" property="id" jdbcType="INTEGER" />
+							<result column="title" property="title" jdbcType="VARCHAR" />
+							<result column="email" property="email" jdbcType="VARCHAR" />
+							<result column="logo" property="logo" jdbcType="VARCHAR" />
+							<result column="link_url" property="linkUrl" jdbcType="VARCHAR" />
+							<result column="sort" property="sort" jdbcType="INTEGER" />
+							<result column="status" property="status" jdbcType="INTEGER" />
+							<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+							<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+			  </resultMap>
+  <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+  <sql id="Table_Name">contact</sql>
+	<sql id="Base_Column_List_Without_Id">
+  	  									title ,								email ,								logo ,								link_url ,								sort ,								status ,								create_time ,								update_time 			  </sql>
+  <sql id="Base_Column_List">
+  	  					id ,
+			  			  			  			  			  			  			  			  				<include refid="Base_Column_List_Without_Id"/>
+  </sql>
+    <sql id="Insert_Columns">
+     							<if test="record.title != null">title,</if>
+							<if test="record.email != null">email,</if>
+							<if test="record.logo != null">logo,</if>
+							<if test="record.linkUrl != null">link_url,</if>
+							<if test="record.sort != null">sort,</if>
+							<if test="record.status != null">status,</if>
+							<if test="record.createTime != null">create_time,</if>
+							<if test="record.updateTime != null">update_time,</if>
+			    </sql>
+    <sql id="Insert_Values">
+    							<if test="record.title != null">#{record.title,jdbcType=VARCHAR},</if>
+							<if test="record.email != null">#{record.email,jdbcType=VARCHAR},</if>
+							<if test="record.logo != null">#{record.logo,jdbcType=VARCHAR},</if>
+							<if test="record.linkUrl != null">#{record.linkUrl,jdbcType=VARCHAR},</if>
+							<if test="record.sort != null">#{record.sort,jdbcType=INTEGER},</if>
+							<if test="record.status != null">#{record.status,jdbcType=INTEGER},</if>
+							<if test="record.createTime != null">#{record.createTime,jdbcType=TIMESTAMP},</if>
+							<if test="record.updateTime != null">#{record.updateTime,jdbcType=TIMESTAMP},</if>
+			    </sql>
+    <sql id="Batch_Insert_Values">
+								 #{record.title,jdbcType=VARCHAR},
+		 					 #{record.email,jdbcType=VARCHAR},
+		 					 #{record.logo,jdbcType=VARCHAR},
+		 					 #{record.linkUrl,jdbcType=VARCHAR},
+		 					 #{record.sort,jdbcType=INTEGER},
+		 					 #{record.status,jdbcType=INTEGER},
+		 					 #{record.createTime,jdbcType=TIMESTAMP},
+		 					 #{record.updateTime,jdbcType=TIMESTAMP},
+		 	    </sql>
+	<sql id="Batch_Insert_Values_On_DuplicateKey">
+									#{record.id,jdbcType=INTEGER},
+																																															<include refid="Batch_Insert_Values"/>
+	</sql>
+    <sql id="Update_Set_From_Bean">
+	 							<if test="record.title != null">title = #{record.title,jdbcType=VARCHAR} ,</if>
+							<if test="record.email != null">email = #{record.email,jdbcType=VARCHAR} ,</if>
+							<if test="record.logo != null">logo = #{record.logo,jdbcType=VARCHAR} ,</if>
+							<if test="record.linkUrl != null">link_url = #{record.linkUrl,jdbcType=VARCHAR} ,</if>
+							<if test="record.sort != null">sort = #{record.sort,jdbcType=INTEGER} ,</if>
+							<if test="record.status != null">status = #{record.status,jdbcType=INTEGER} ,</if>
+							<if test="record.createTime != null">create_time = #{record.createTime,jdbcType=TIMESTAMP} ,</if>
+							<if test="record.updateTime != null">update_time = #{record.updateTime,jdbcType=TIMESTAMP} ,</if>
+			    </sql>
+	<!-- insert -->
+	<insert id="insert" parameterType="java.util.Map">
+				<selectKey resultType="java.lang.Integer" keyProperty="record.id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+		        insert into <include refid="Table_Name"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="Insert_Columns"/>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <include refid="Insert_Values"/>
+        </trim>
+    </insert>
+    <insert id="batchInsert" parameterType="java.util.Map">
+        insert into <include refid="Table_Name"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="Base_Column_List_Without_Id"/>
+        </trim>
+        values
+        <foreach collection="records" item="record" index="index" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <include refid="Batch_Insert_Values"/>
+            </trim>
+        </foreach>
+    </insert>
+	<insert id="batchInsertOnDuplicateKey" parameterType="java.util.Map">
+		insert into <include refid="Table_Name"/>
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<include refid="Base_Column_List"/>
+		</trim>
+		values
+		<foreach collection="records" item="record" index="index" separator=",">
+			<trim prefix="(" suffix=")" suffixOverrides=",">
+				<include refid="Batch_Insert_Values_On_DuplicateKey"/>
+			</trim>
+		</foreach>
+		ON DUPLICATE KEY UPDATE 
+																title = VALUES(title)  ,												email = VALUES(email)  ,												logo = VALUES(logo)  ,												link_url = VALUES(link_url)  ,												sort = VALUES(sort)  ,												status = VALUES(status)  ,												create_time = VALUES(create_time)  ,												update_time = VALUES(update_time)  						</insert>
+	<!-- end insert -->
+    <!-- delete -->
+    <delete id="deleteById" parameterType="java.util.Map">
+        delete from <include refid="Table_Name"/> where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteByExample" parameterType="java.util.Map">
+        delete from <include refid="Table_Name"/>
+        <if test="example != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <delete id="deleteIn" parameterType="java.util.Map">
+        delete from <include refid="Table_Name"/> where id in
+        <foreach collection="records" item="record" index="index" open="(" separator="," close=")">
+			#{record.id,jdbcType=INTEGER}
+		</foreach>
+    </delete>
+    <!-- end delete -->
+    <!-- update -->
+	<update id="updateById" parameterType="java.util.Map">
+        update <include refid="Table_Name"/>
+        <set>
+            <include refid="Update_Set_From_Bean"/>
+        </set>
+		where id = #{record.id,jdbcType=INTEGER}
+	</update>
+    <update id="updateByExample" parameterType="java.util.Map">
+        update <include refid="Table_Name"/>
+        <set>
+            <include refid="Update_Set_From_Bean"/>
+        </set>
+        <if test="example != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="batchUpdate" parameterType="java.util.Map">
+        <foreach collection="records" item="record" index="index" open="" close="" separator=";">
+            update <include refid="Table_Name"/>
+            <set>
+            	<include refid="Update_Set_From_Bean"/>
+            </set>
+			where id=#{record.id,jdbcType=INTEGER}
+		</foreach>
+    </update>
+	 <!-- end update -->
+    <!-- select -->
+    <select id="selectById" resultMap="ContactMap" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from <include refid="Table_Name"/>
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectByExample" resultMap="ContactMap" parameterType="java.util.Map">
+      select
+      <if test="example != null and example.distinct">
+        distinct
+      </if>
+      <include refid="Base_Column_List"/>
+      from <include refid="Table_Name"/>
+      <if test="example != null">
+        <include refid="Example_Where_Clause"/>
+      </if>
+      <if test="example != null and example.orderByClause != null">
+        order by ${example.orderByClause}
+      </if>
+    </select>
+    <select id="selectOneByExample" resultMap="ContactMap" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from <include refid="Table_Name"/>
+		<if test="example != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        limit 1
+    </select>
+    <select id="selectIn" resultMap="ContactMap" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from <include refid="Table_Name"/>
+        where id IN
+        <foreach collection="records" item="record" index="index" open="(" separator="," close=")">
+			#{record.id,jdbcType=INTEGER}
+		</foreach>
+    </select>
+    <select id="countByExample" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(*) as total from <include refid="Table_Name"/>
+       <if test="example != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <select id="countByPager" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(*) as total from <include refid="Table_Name"/>
+		<if test="example != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <select id="selectByPager" resultMap="ContactMap" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from <include refid="Table_Name"/>
+        <if test="example != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="pager.sortItem != null and pager.sortItem != '' ">
+            order by ${pager.sortItem} ${pager.sortType}
+        </if>
+        limit #{pager.startIndex} , #{pager.pageSize}
+    </select>
+	 <!-- end select -->
+    <!-- My Custom Interfaces -->
+</mapper>
