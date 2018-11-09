@@ -56,4 +56,11 @@ public class TezosController {
         return ResponseResult.success(pageInfo);
     }
 
+    @GetMapping("/endor-cycle")
+    public ResponseResult endorCycle(final int p, final int number, final String address, final int cycle) {
+        final PageInfo pageInfo = tezosService.EndorCycle(p, number, address, cycle);
+        return ResponseResult.success(pageInfo);
+    }
+
+
 }

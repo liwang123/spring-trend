@@ -332,5 +332,45 @@ public class TezosService {
     }
 
 
+    public PageInfo EndorCycle(final int p, final int number, final String url, final int cycle) {
+        final PageInfo pageInfo = new PageInfo(p, number);
+
+        final String apiUrl = TezosUtil.getUrl();
+        final List<EndorsementCycleEntity> arrayList = Lists.newArrayList();
+        final String URL = apiUrl + "/v1/number_bakings_endorsement/" + url + "?cycle=" + cycle;
+        final String numberHistory = OkHttpUtils.get(URL, null);
+        final JSONArray parse = (JSONArray) JSONArray.parse(numberHistory);
+        final int totalCount = (int) parse.get(0);
+
+        System.out.println(totalCount);
+
+        final String endorHistoryUrl = apiUrl + "/v1/bakings_endorsement/" + url + "?cycle=" + cycle + "&p=" + p + "&number=" + number;
+
+        final String bakingHistory = OkHttpUtils.get(endorHistoryUrl, null);
+        final JSONArray completeArray = (JSONArray) JSONArray.parse(bakingHistory);
+        for (int i = 0; i < completeArray.size(); i++) {
+            final JSONObject parseObject = completeArray.getJSONObject(i);
+            final JSONArray slots = parseObject.getJSONArray("slots");
+            
+            final String replace = slots.toString().replace("[", "").replace("]", "");
+            System.out.println(replace);
+            final EndorsementCycleEntity endorsementCycleEntity = EndorsementCycleEntity.builder()
+                    .cycle(parseObject.getInteger("cycle"))
+                    .deposits(null)
+                    .level(parseObject.getInteger("level"))
+                    .status(1)
+                    .slots(replace)
+                    .priority(parseObject.getBigDecimal("priority"))
+                    .rewards(2 * slots.size())
+                    .build();
+            arrayList.add(endorsementCycleEntity);
+
+        }
+        pageInfo.setListObject(arrayList);
+        pageInfo.setTotals(totalCount);
+        return pageInfo;
+    }
+
+
 
 }
