@@ -25,40 +25,41 @@ public class TezosController {
 
     @GetMapping("/baking-history")
     public ResponseResult bakingHistory(final int p, final int number, final String address) {
-        final PageInfo pageInfo = tezosService.bakingHistory(p, number, address);
+
+        final PageInfo pageInfo = tezosService.bakingHistory(p - 1, number, address);
         return ResponseResult.success(pageInfo);
     }
 
 
     @GetMapping("/endor-history")
     public ResponseResult endorHistory(final int p, final int number, final String address) {
-        final PageInfo pageInfo = tezosService.endorsementHistory(p, number, address);
+        final PageInfo pageInfo = tezosService.endorsementHistory(p - 1, number, address);
         return ResponseResult.success(pageInfo);
     }
 
 
     @GetMapping("/baking-rights")
     public ResponseResult bakingRights(final int p, final int number, final String address, final int cycle) {
-        final PageInfo pageInfo = tezosService.queryBakingRights(p, number, address, cycle);
+        final PageInfo pageInfo = tezosService.queryBakingRights(p - 1, number, address, cycle);
         return ResponseResult.success(pageInfo);
     }
 
 
     @GetMapping("/cycle-details")
     public ResponseResult cycle(final int p, final int number, final String address, final int cycle) {
-        final PageInfo pageInfo = tezosService.CycleDetails(p, number, address, cycle);
+        final PageInfo pageInfo = tezosService.CycleDetails(p - 1, number, address, cycle);
         return ResponseResult.success(pageInfo);
     }
 
     @GetMapping("/endor-rights")
     public ResponseResult endorRights(final int p, final int number, final String address, final int cycle) {
-        final PageInfo pageInfo = tezosService.endorsementRights(p, number, address, cycle);
+        final PageInfo pageInfo = tezosService.endorsementRights(p - 1, number, address, cycle);
         return ResponseResult.success(pageInfo);
     }
 
     @GetMapping("/endor-cycle")
     public ResponseResult endorCycle(final int p, final int number, final String address, final int cycle) {
-        final PageInfo pageInfo = tezosService.EndorCycle(p, number, address, cycle);
+        final PageInfo pageInfo = tezosService.EndorCycle(p - 1, number, address, cycle);
         return ResponseResult.success(pageInfo);
     }
 
