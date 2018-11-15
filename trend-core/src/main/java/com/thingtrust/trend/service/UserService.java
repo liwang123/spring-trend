@@ -36,4 +36,14 @@ public class UserService {
         userRepository.insert(user);
     }
 
+    public void updateUser(final UserEntity userEntity) {
+        final UserExample userExample = new UserExample();
+        userExample.createCriteria()
+                .andUsernameEqualTo(userEntity.getUsername());
+        final User user = userRepository.selectOneByExample(userExample);
+        user.setPassword(DigestUtils.md5Hex(userEntity.getPassword()));
+        userRepository.updateById(user);
+
+    }
+
 }

@@ -52,6 +52,12 @@ public class UserController {
         return ResponseResult.success();
     }
 
+    @PostMapping("/upodate-user")
+    public ResponseResult updateUser(final UserEntity userEntity) {
+        userService.updateUser(userEntity);
+        return ResponseResult.success();
+    }
+
     @GetMapping("/verification")
     public void getValidate(final HttpServletResponse response, final HttpSession session) {
         response.setHeader("Pragma", "No-cache");

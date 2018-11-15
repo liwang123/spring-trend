@@ -63,5 +63,17 @@ public class TezosController {
         return ResponseResult.success(pageInfo);
     }
 
+    @GetMapping("/list-tezos")
+    public ResponseResult listTezos(final int index, final int length, final String address, final Integer cycle, final Integer status) {
+        final PageInfo pageInfo = tezosService.listTezos(index, length, address, cycle, status);
+        return ResponseResult.success(pageInfo);
+    }
+
+    @GetMapping("/set-fee")
+    public ResponseResult setFee(final int cycle, final int fee) {
+        tezosService.setFee(cycle, fee);
+        return ResponseResult.success();
+    }
+    
 
 }

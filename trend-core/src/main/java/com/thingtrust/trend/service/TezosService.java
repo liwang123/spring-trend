@@ -5,18 +5,28 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.thingtrust.trend.common.mybatis.pager.PageInfo;
+import com.thingtrust.trend.data.TezosRepository;
+import com.thingtrust.trend.domain.Tezos;
+import com.thingtrust.trend.domain.example.TezosExample;
 import com.thingtrust.trend.dto.BakingDTO;
+import com.thingtrust.trend.dto.TezosDTO;
 import com.thingtrust.trend.entity.*;
 import com.thingtrust.trend.util.OkHttpUtils;
 import com.thingtrust.trend.util.TezosUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class TezosService {
 
+    @Autowired
+    private TezosRepository tezosRepository;
 
     public BalanceEmtity queryBalance(final String nodeUrl) {
         final String apiUrl = TezosUtil.getUrl();
@@ -371,6 +381,49 @@ public class TezosService {
         return pageInfo;
     }
 
+    public PageInfo listTezos(final int index, final int length, final String address, final Integer cycle, final Integer status) {
+        final PageInfo pageInfo = new PageInfo(index, length, "cycle");
+        final TezosExample tezosExample = new TezosExample();
+        final TezosExample.Criteria criteria = tezosExample.createCriteria();
+        if (StringUtils.isNotBlank(address)) {
+            criteria.andDelegatorAddressEqualTo(address);
+        }
+        if (cycle != null) {
+            criteria.andCycleEqualTo(cycle);
+        }
+        if (status != null) {
+            criteria.andStatusEqualTo(status);
+        }
+        final List<Tezos> tezosList = tezosRepository.selectByPager(pageInfo, tezosExample);
+        final ArrayList<TezosDTO> tezosDTOArrayList = Lists.newArrayList();
+        tezosList.stream()
+                .forEach(tezos -> {
+                    final TezosDTO tezosDTO = TezosDTO.builder().build();
+                    BeanUtils.copyProperties(tezos, tezosDTO);
+                    tezosDTO.setStatus(TezosUtil.getStatus(tezos.getStatus()));
+                    tezosDTO.setPayTime(tezos.getPayTime() == null ? null : tezos.getPayTime().toString().replaceAll("T", " "));
+                    tezosDTOArrayList.add(tezosDTO);
+                });
+        final int countByExample = tezosRepository.countByExample(tezosExample);
+        pageInfo.setTotals(countByExample);
+        pageInfo.setListObject(tezosDTOArrayList);
+        return pageInfo;
 
+    }
 
+    public void setFee(final int cycle, final int fee) {
+        final TezosExample tezosExample = new TezosExample();
+        tezosExample.createCriteria()
+                .andCycleEqualTo(cycle)
+                .andStatusNotEqualTo(4);
+        final List<Tezos> tezosList = tezosRepository.selectByExample(tezosExample);
+        final BigDecimal feeD = new BigDecimal(100 - fee).divide(new BigDecimal(100));
+        tezosList.stream()
+                .forEach(tezos -> {
+                    final BigDecimal divide = tezos.getReward().multiply(feeD);
+                    tezos.setFee(fee);
+                    tezos.setRevenue(divide);
+                    tezosRepository.updateById(tezos);
+                });
+    }
 }

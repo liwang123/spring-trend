@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.thingtrust.trend.data.UserRepository">
+<mapper namespace="com.thingtrust.trend.data.TezosRepository">
     <!-- CodeBuilder  Generated-->
-    <resultMap id="UserMap" type="com.thingtrust.trend.domain.User">
+    <resultMap id="TezosMap" type="com.thingtrust.trend.domain.Tezos">
         <id column="id" property="id" jdbcType="INTEGER"/>
-        <result column="username" property="username" jdbcType="VARCHAR"/>
-        <result column="password" property="password" jdbcType="CHAR"/>
+        <result column="cycle" property="cycle" jdbcType="INTEGER"/>
+        <result column="delegator_address" property="delegatorAddress" jdbcType="VARCHAR"/>
+        <result column="delegated_balance" property="delegatedBalance" jdbcType="DECIMAL"/>
+        <result column="reward" property="reward" jdbcType="DECIMAL"/>
+        <result column="revenue" property="revenue" jdbcType="DECIMAL"/>
+        <result column="fee" property="fee" jdbcType="INTEGER"/>
+        <result column="pay_in" property="payIn" jdbcType="DECIMAL"/>
+        <result column="pay_out" property="payOut" jdbcType="DECIMAL"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="pay_time" property="payTime" jdbcType="TIMESTAMP"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP"/>
     </resultMap>
     <sql id="Example_Where_Clause">
         <where>
@@ -37,32 +47,74 @@
             </foreach>
         </where>
     </sql>
-    <sql id="Table_Name">user</sql>
+    <sql id="Table_Name">tezos</sql>
     <sql id="Base_Column_List_Without_Id">
-  	  									username ,								password 			  </sql>
+  	  									cycle ,								delegator_address ,								delegated_balance ,								reward ,								revenue ,								fee ,								pay_in ,								pay_out ,								status ,								pay_time ,								create_time ,								updatetime 			  </sql>
     <sql id="Base_Column_List">
         id ,
         <include refid="Base_Column_List_Without_Id"/>
     </sql>
     <sql id="Insert_Columns">
-        <if test="record.username != null">username,</if>
-        <if test="record.password != null">password,</if>
+        <if test="record.cycle != null">cycle,</if>
+        <if test="record.delegatorAddress != null">delegator_address,</if>
+        <if test="record.delegatedBalance != null">delegated_balance,</if>
+        <if test="record.reward != null">reward,</if>
+        <if test="record.revenue != null">revenue,</if>
+        <if test="record.fee != null">fee,</if>
+        <if test="record.payIn != null">pay_in,</if>
+        <if test="record.payOut != null">pay_out,</if>
+        <if test="record.status != null">status,</if>
+        <if test="record.payTime != null">pay_time,</if>
+        <if test="record.createTime != null">create_time,</if>
+        <if test="record.updatetime != null">updatetime,</if>
     </sql>
     <sql id="Insert_Values">
-        <if test="record.username != null">#{record.username,jdbcType=VARCHAR},</if>
-        <if test="record.password != null">#{record.password,jdbcType=CHAR},</if>
+        <if test="record.cycle != null">#{record.cycle,jdbcType=INTEGER},</if>
+        <if test="record.delegatorAddress != null">#{record.delegatorAddress,jdbcType=VARCHAR},</if>
+        <if test="record.delegatedBalance != null">#{record.delegatedBalance,jdbcType=DECIMAL},</if>
+        <if test="record.reward != null">#{record.reward,jdbcType=DECIMAL},</if>
+        <if test="record.revenue != null">#{record.revenue,jdbcType=DECIMAL},</if>
+        <if test="record.fee != null">#{record.fee,jdbcType=INTEGER},</if>
+        <if test="record.payIn != null">#{record.payIn,jdbcType=DECIMAL},</if>
+        <if test="record.payOut != null">#{record.payOut,jdbcType=DECIMAL},</if>
+        <if test="record.status != null">#{record.status,jdbcType=INTEGER},</if>
+        <if test="record.payTime != null">#{record.payTime,jdbcType=TIMESTAMP},</if>
+        <if test="record.createTime != null">#{record.createTime,jdbcType=TIMESTAMP},</if>
+        <if test="record.updatetime != null">#{record.updatetime,jdbcType=TIMESTAMP},</if>
     </sql>
     <sql id="Batch_Insert_Values">
-								 #{record.username,jdbcType=VARCHAR},
-		 					 #{record.password,jdbcType=CHAR},
+								 #{record.cycle,jdbcType=INTEGER},
+		 					 #{record.delegatorAddress,jdbcType=VARCHAR},
+		 					 #{record.delegatedBalance,jdbcType=DECIMAL},
+		 					 #{record.reward,jdbcType=DECIMAL},
+		 					 #{record.revenue,jdbcType=DECIMAL},
+		 					 #{record.fee,jdbcType=INTEGER},
+		 					 #{record.payIn,jdbcType=DECIMAL},
+		 					 #{record.payOut,jdbcType=DECIMAL},
+		 					 #{record.status,jdbcType=INTEGER},
+		 					 #{record.payTime,jdbcType=TIMESTAMP},
+		 					 #{record.createTime,jdbcType=TIMESTAMP},
+		 					 #{record.updatetime,jdbcType=TIMESTAMP},
 		 	    </sql>
     <sql id="Batch_Insert_Values_On_DuplicateKey">
         #{record.id,jdbcType=INTEGER},
         <include refid="Batch_Insert_Values"/>
     </sql>
     <sql id="Update_Set_From_Bean">
-        <if test="record.username != null">username = #{record.username,jdbcType=VARCHAR} ,</if>
-        <if test="record.password != null">password = #{record.password,jdbcType=CHAR} ,</if>
+        <if test="record.cycle != null">cycle = #{record.cycle,jdbcType=INTEGER} ,</if>
+        <if test="record.delegatorAddress != null">delegator_address = #{record.delegatorAddress,jdbcType=VARCHAR} ,
+        </if>
+        <if test="record.delegatedBalance != null">delegated_balance = #{record.delegatedBalance,jdbcType=DECIMAL} ,
+        </if>
+        <if test="record.reward != null">reward = #{record.reward,jdbcType=DECIMAL} ,</if>
+        <if test="record.revenue != null">revenue = #{record.revenue,jdbcType=DECIMAL} ,</if>
+        <if test="record.fee != null">fee = #{record.fee,jdbcType=INTEGER} ,</if>
+        <if test="record.payIn != null">pay_in = #{record.payIn,jdbcType=DECIMAL} ,</if>
+        <if test="record.payOut != null">pay_out = #{record.payOut,jdbcType=DECIMAL} ,</if>
+        <if test="record.status != null">status = #{record.status,jdbcType=INTEGER} ,</if>
+        <if test="record.payTime != null">pay_time = #{record.payTime,jdbcType=TIMESTAMP} ,</if>
+        <if test="record.createTime != null">create_time = #{record.createTime,jdbcType=TIMESTAMP} ,</if>
+        <if test="record.updatetime != null">updatetime = #{record.updatetime,jdbcType=TIMESTAMP} ,</if>
     </sql>
     <!-- insert -->
     <insert id="insert" parameterType="java.util.Map">
@@ -79,7 +131,8 @@
         </trim>
     </insert>
     <insert id="batchInsert" parameterType="java.util.Map">
-        insert into <include refid="Table_Name"/>
+        insert into
+        <include refid="Table_Name"/>
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <include refid="Base_Column_List_Without_Id"/>
         </trim>
@@ -103,21 +156,29 @@
             </trim>
         </foreach>
         ON DUPLICATE KEY UPDATE
-        username = VALUES(username) , password = VALUES(password)
+        cycle = VALUES(cycle) , delegator_address = VALUES(delegator_address) , delegated_balance =
+        VALUES(delegated_balance) , reward = VALUES(reward) , revenue = VALUES(revenue) , fee = VALUES(fee) , pay_in =
+        VALUES(pay_in) , pay_out = VALUES(pay_out) , status = VALUES(status) , pay_time = VALUES(pay_time) , create_time
+        = VALUES(create_time) , updatetime = VALUES(updatetime)
     </insert>
     <!-- end insert -->
     <!-- delete -->
     <delete id="deleteById" parameterType="java.util.Map">
-        delete from <include refid="Table_Name"/> where id = #{id,jdbcType=INTEGER}
+        delete from
+        <include refid="Table_Name"/>
+        where id = #{id,jdbcType=INTEGER}
     </delete>
     <delete id="deleteByExample" parameterType="java.util.Map">
-        delete from <include refid="Table_Name"/>
+        delete from
+        <include refid="Table_Name"/>
         <if test="example != null">
             <include refid="Example_Where_Clause"/>
         </if>
     </delete>
     <delete id="deleteIn" parameterType="java.util.Map">
-        delete from <include refid="Table_Name"/> where id in
+        delete from
+        <include refid="Table_Name"/>
+        where id in
         <foreach collection="records" item="record" index="index" open="(" separator="," close=")">
             #{record.id,jdbcType=INTEGER}
         </foreach>
@@ -125,14 +186,16 @@
     <!-- end delete -->
     <!-- update -->
     <update id="updateById" parameterType="java.util.Map">
-        update <include refid="Table_Name"/>
+        update
+        <include refid="Table_Name"/>
         <set>
             <include refid="Update_Set_From_Bean"/>
         </set>
         where id = #{record.id,jdbcType=INTEGER}
     </update>
     <update id="updateByExample" parameterType="java.util.Map">
-        update <include refid="Table_Name"/>
+        update
+        <include refid="Table_Name"/>
         <set>
             <include refid="Update_Set_From_Bean"/>
         </set>
@@ -142,7 +205,8 @@
     </update>
     <update id="batchUpdate" parameterType="java.util.Map">
         <foreach collection="records" item="record" index="index" open="" close="" separator=";">
-            update <include refid="Table_Name"/>
+            update
+            <include refid="Table_Name"/>
             <set>
                 <include refid="Update_Set_From_Bean"/>
             </set>
@@ -151,13 +215,14 @@
     </update>
     <!-- end update -->
     <!-- select -->
-    <select id="selectById" resultMap="UserMap" parameterType="java.util.Map">
+    <select id="selectById" resultMap="TezosMap" parameterType="java.util.Map">
         select
         <include refid="Base_Column_List"/>
-        from <include refid="Table_Name"/>
+        from
+        <include refid="Table_Name"/>
         where id = #{id,jdbcType=INTEGER}
     </select>
-    <select id="selectByExample" resultMap="UserMap" parameterType="java.util.Map">
+    <select id="selectByExample" resultMap="TezosMap" parameterType="java.util.Map">
         select
         <if test="example != null and example.distinct">
             distinct
@@ -172,40 +237,45 @@
             order by ${example.orderByClause}
         </if>
     </select>
-    <select id="selectOneByExample" resultMap="UserMap" parameterType="java.util.Map">
+    <select id="selectOneByExample" resultMap="TezosMap" parameterType="java.util.Map">
         select
         <include refid="Base_Column_List"/>
-        from <include refid="Table_Name"/>
+        from
+        <include refid="Table_Name"/>
         <if test="example != null">
             <include refid="Example_Where_Clause"/>
         </if>
         limit 1
     </select>
-    <select id="selectIn" resultMap="UserMap" parameterType="java.util.Map">
+    <select id="selectIn" resultMap="TezosMap" parameterType="java.util.Map">
         select
         <include refid="Base_Column_List"/>
-        from <include refid="Table_Name"/>
+        from
+        <include refid="Table_Name"/>
         where id IN
         <foreach collection="records" item="record" index="index" open="(" separator="," close=")">
             #{record.id,jdbcType=INTEGER}
         </foreach>
     </select>
     <select id="countByExample" resultType="java.lang.Integer" parameterType="java.util.Map">
-        select count(*) as total from <include refid="Table_Name"/>
+        select count(*) as total from
+        <include refid="Table_Name"/>
         <if test="example != null">
             <include refid="Example_Where_Clause"/>
         </if>
     </select>
     <select id="countByPager" resultType="java.lang.Integer" parameterType="java.util.Map">
-        select count(*) as total from <include refid="Table_Name"/>
+        select count(*) as total from
+        <include refid="Table_Name"/>
         <if test="example != null">
             <include refid="Example_Where_Clause"/>
         </if>
     </select>
-    <select id="selectByPager" resultMap="UserMap" parameterType="java.util.Map">
+    <select id="selectByPager" resultMap="TezosMap" parameterType="java.util.Map">
         select
         <include refid="Base_Column_List"/>
-        from <include refid="Table_Name"/>
+        from
+        <include refid="Table_Name"/>
         <if test="example != null">
             <include refid="Example_Where_Clause"/>
         </if>
@@ -214,6 +284,8 @@
         </if>
         limit #{pager.startIndex} , #{pager.pageSize}
     </select>
+
+
     <!-- end select -->
     <!-- My Custom Interfaces -->
 </mapper>
