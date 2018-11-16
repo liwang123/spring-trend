@@ -19,7 +19,7 @@ public class TezosTask {
     @Autowired
     private TezosRepository tezosRepository;
 
-    @Scheduled(cron = "0 0/3 * * * ? ")
+    @Scheduled(cron = "0 0/59 * * * ? ")
     public void insertTezos() {
         final String url = "tz1LmaFsWRkjr7QMCx5PtV6xTUz3AmEpKQiF";
         final int p = 0;
