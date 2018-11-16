@@ -56,7 +56,7 @@ public class OkHttpUtils {
         }
 
         final Request request = new Request.Builder()
-                .header("referer", "http://trustnote.org")
+//                .header("referer", "https://trustnote.org")
                 .header("User-Agent", userAgent)
                 .url(httpUrlBuilder.build().url())
                 .get()
@@ -79,7 +79,7 @@ public class OkHttpUtils {
         }
 
         final Request request = new Request.Builder()
-                .header("referer", "http://trustnote.org")
+//                .header("referer", "http://trustnote.org")
                 .header("User-Agent", userAgent)
                 .url(url)
                 .post(formBuilder.build())
@@ -95,7 +95,7 @@ public class OkHttpUtils {
 
         final RequestBody body = RequestBody.create(OkHttpUtils.JSON_TYPE, JSON.toJSONString(map));
         final Request request = new Request.Builder()
-                .header("referer", "http://trustnote.org")
+//                .header("referer", "http://trustnote.org")
                 .url(url)
                 .post(body)
                 .build();
