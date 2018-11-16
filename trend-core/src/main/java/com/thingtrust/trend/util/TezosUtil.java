@@ -39,8 +39,10 @@ public class TezosUtil {
             return "Paying";
         }
         if (status == 4) {
+            //发放完成
             return "Paid";
         }
+        //未发放
         if (status == 6) {
             return "Frozen";
         }
