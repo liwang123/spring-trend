@@ -23,7 +23,7 @@ public class TezosTask {
     public void insertTezos() {
         final String url = "tz1LmaFsWRkjr7QMCx5PtV6xTUz3AmEpKQiF";
         final int p = 0;
-        final int number = 10;
+        final int number = 1000;
         final String apiUrl = TezosUtil.getUrl();
 
         final String endorHistoryUrl = apiUrl + "/v2/rewards_split_cycles/" + url + "?p=" + p + "&number=" + 1000;
