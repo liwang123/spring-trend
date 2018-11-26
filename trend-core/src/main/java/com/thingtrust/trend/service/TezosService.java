@@ -292,7 +292,10 @@ public class TezosService {
             final int day = depth / 1440;
             final int hours = depth % 1440 / 60;
             final int minutes = depth % 1440 % 60;
-            final String times = day + "d " + hours + "h " + minutes + "m";
+            String times = day + "d " + hours + "h " + minutes + "m";
+            if (day == 0) {
+                times = hours + "h " + minutes + "m";
+            }
             final BakingRightsEntity bakingRightsEntity = BakingRightsEntity.builder()
                     .cycle((int) total.get("cycle"))
                     .deposits(null)
@@ -329,15 +332,16 @@ public class TezosService {
         for (int i = 0; i < completeArray.size(); i++) {
             final JSONObject parseObject = completeArray.getJSONObject(i);
             System.out.println(parseObject);
+            final Boolean baked = parseObject.getBoolean("baked");
 
             final CycleEntity cycleEntity = CycleEntity.builder()
-                    .bakeTime(parseObject.getInteger("bake_time"))
+                    .bakeTime(baked == false ? null : parseObject.getInteger("bake_time"))
                     .cycle(parseObject.getInteger("cycle"))
                     .deposits(null)
                     .level(parseObject.getInteger("level"))
                     .priority(parseObject.getBigDecimal("priority"))
-                    .status(1)
-                    .rewards(parseObject.getBigDecimal("fees").divide(new BigDecimal(1000000)).add(new BigDecimal(16)))
+                    .status(baked == false ? 2 : 1)
+                    .rewards(baked == false ? null : parseObject.getBigDecimal("fees").divide(new BigDecimal(1000000)).add(new BigDecimal(16)))
                     .build();
             arrayList.add(cycleEntity);
 
@@ -370,7 +374,10 @@ public class TezosService {
             final int day = depth / 1440;
             final int hours = depth % 1440 / 60;
             final int minutes = depth % 1440 % 60;
-            final String times = day + "d " + hours + "h " + minutes + "m";
+            String times = day + "d " + hours + "h " + minutes + "m";
+            if (day == 0) {
+                times = hours + "h " + minutes + "m";
+            }
             final EndorsementRihtsEntity endorsementRihtsEntity = EndorsementRihtsEntity.builder()
                     .cycle(parseObject.getInteger("cycle"))
                     .deposits(null)
@@ -408,19 +415,26 @@ public class TezosService {
         final JSONArray completeArray = (JSONArray) JSONArray.parse(bakingHistory);
         for (int i = 0; i < completeArray.size(); i++) {
             final JSONObject parseObject = completeArray.getJSONObject(i);
-            final JSONArray slots = parseObject.getJSONArray("slots");
-            
-            final String replace = slots.toString().replace("[", "").replace("]", "");
-            System.out.println(replace);
+            final int size = parseObject.size();
+            String replace = "";
+            JSONArray slots = null;
+            String lr_nslot = "";
+            if (size != 2) {
+                slots = parseObject.getJSONArray("slots");
+                replace = slots.toString().replace("[", "").replace("]", "");
+            } else {
+                lr_nslot = parseObject.getInteger("lr_nslot") + "";
+            }
             final EndorsementCycleEntity endorsementCycleEntity = EndorsementCycleEntity.builder()
-                    .cycle(parseObject.getInteger("cycle"))
-                    .deposits(null)
+                    .cycle(size == 2 ? cycle : parseObject.getInteger("cycle"))
+                    .deposits(size == 2 ? new BigDecimal(0) : null)
                     .level(parseObject.getInteger("level"))
-                    .status(1)
-                    .slots(replace)
-                    .priority(parseObject.getBigDecimal("priority"))
-                    .rewards(2 * slots.size())
+                    .status(size == 2 ? 2 : 1)
+                    .slots(size == 2 ? lr_nslot : replace)
+                    .priority(size == 2 ? null : parseObject.getBigDecimal("priority"))
+                    .rewards(size == 2 ? 0 : 2 * slots.size())
                     .build();
+
             arrayList.add(endorsementCycleEntity);
 
         }
