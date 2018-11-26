@@ -323,8 +323,6 @@ public class TezosService {
         final int totalCount = (int) parse.get(0);
         final int p = page - 1;
 
-        System.out.println(totalCount);
-
         final String endorHistoryUrl = apiUrl + "/v1/bakings/" + url + "?cycle=" + cycle + "&p=" + p + "&number=" + number;
 
         final String bakingHistory = OkHttpUtils.get(endorHistoryUrl, null);
@@ -333,7 +331,6 @@ public class TezosService {
             final JSONObject parseObject = completeArray.getJSONObject(i);
             System.out.println(parseObject);
             final Boolean baked = parseObject.getBoolean("baked");
-
             final CycleEntity cycleEntity = CycleEntity.builder()
                     .bakeTime(baked == false ? null : parseObject.getInteger("bake_time"))
                     .cycle(parseObject.getInteger("cycle"))
@@ -343,7 +340,14 @@ public class TezosService {
                     .status(baked == false ? 2 : 1)
                     .rewards(baked == false ? null : parseObject.getBigDecimal("fees").divide(new BigDecimal(1000000)).add(new BigDecimal(16)))
                     .build();
+            if (parseObject.getInteger("distance_level") == -1) {
+                cycleEntity.setStatus(3);
+                cycleEntity.setBakeTime(null);
+                cycleEntity.setDeposits(null);
+                cycleEntity.setRewards(null);
+            }
             arrayList.add(cycleEntity);
+
 
         }
         pageInfo.setListObject(arrayList);
@@ -406,9 +410,6 @@ public class TezosService {
         final JSONArray parse = (JSONArray) JSONArray.parse(numberHistory);
         final int totalCount = (int) parse.get(0);
         final int p = page - 1;
-
-        System.out.println(totalCount);
-
         final String endorHistoryUrl = apiUrl + "/v1/bakings_endorsement/" + url + "?cycle=" + cycle + "&p=" + p + "&number=" + number;
 
         final String bakingHistory = OkHttpUtils.get(endorHistoryUrl, null);
