@@ -19,7 +19,7 @@ public class TezosUtil {
         }
         if (status.equals("rewards_pending")) {
             //发放奖励中
-            return 6;
+            return 3;
         }
         //发放完成
         return 4;
@@ -43,10 +43,13 @@ public class TezosUtil {
             return "Paid";
         }
         //未发放
-        if (status == 6) {
+        if (status == 5) {
             return "Frozen";
         }
-        //发放完成
-        return "Failure";
+        if (status == 6) {
+            //发放完成
+            return "Failure";
+        }
+        return null;
     }
 }

@@ -11,19 +11,52 @@ import com.thingtrust.trend.domain.example.TezosExample;
 import com.thingtrust.trend.dto.BakingDTO;
 import com.thingtrust.trend.dto.TezosDTO;
 import com.thingtrust.trend.entity.*;
+import com.thingtrust.trend.util.IOUtils;
 import com.thingtrust.trend.util.OkHttpUtils;
 import com.thingtrust.trend.util.TezosUtil;
+import com.thingtrust.trend.util.ssh.ScpClient;
+import com.thingtrust.trend.util.ssh.SshUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class TezosService {
+
+    @Value("${thingtrust.host}")
+    private String hostUrl;
+
+    @Value("${thingtrust.account}")
+    private String account;
+
+    @Value("${thingtrust.password}")
+    private String password;
+
+    @Value("${thingtrust.command}")
+    private String command;
+
+    @Value("${thingtrust.isSudo}")
+    private boolean isSudo;
+
+    @Value("${thingtrust.port}")
+    private int port;
+
+    @Value("${thingtrust.path}")
+    private String path;
+
+    @Value("${thingtrust.remotePath}")
+    private String remotePath;
 
     @Autowired
     private TezosRepository tezosRepository;
@@ -64,8 +97,8 @@ public class TezosService {
     }
 
 
-    public PageInfo bakingHistory(final int p, final int number, final String url) {
-        final PageInfo pageInfo = new PageInfo(p, number);
+    public PageInfo bakingHistory(final int page, final int number, final String url) {
+        final PageInfo pageInfo = new PageInfo(page, number);
         final List<BakingEntity> arrayList = Lists.newArrayList();
         final String apiUrl = TezosUtil.getUrl();
         final String numberHistoryUrl = apiUrl + "/v1/number_bakings_history/" + url;
@@ -73,7 +106,7 @@ public class TezosService {
         final JSONArray parse = (JSONArray) JSONArray.parse(numberHistory);
         final int totalCount = (int) parse.get(0);
         System.out.println(totalCount);
-
+        final int p = page - 1;
         final String bakingHistoryUrl = apiUrl + "/v1/bakings_history/" + url + "?p=" + p + "&number=" + number;
         final String bakingHistory = OkHttpUtils.get(bakingHistoryUrl, null);
         final JSONArray history = (JSONArray) JSONArray.parse(bakingHistory);
@@ -154,14 +187,15 @@ public class TezosService {
     }
 
 
-    public PageInfo endorsementHistory(final int p, final int number, final String url) {
-        final PageInfo pageInfo = new PageInfo(p, number);
+    public PageInfo endorsementHistory(final int page, final int number, final String url) {
+        final PageInfo pageInfo = new PageInfo(page, number);
         final String apiUrl = TezosUtil.getUrl();
         final List<EndorsementEntity> arrayList = Lists.newArrayList();
         final String URL = apiUrl + "/v1/number_endorsements_history/" + url;
         final String numberHistory = OkHttpUtils.get(URL, null);
         final JSONArray parse = (JSONArray) JSONArray.parse(numberHistory);
         final int totalCount = (int) parse.get(0);
+        final int p = page - 1;
 
         System.out.println(totalCount);
 
@@ -235,14 +269,15 @@ public class TezosService {
         return pageInfo;
     }
 
-    public PageInfo queryBakingRights(final int p, final int number, final String url, final int cycle) {
-        final PageInfo pageInfo = new PageInfo(p, number);
+    public PageInfo queryBakingRights(final int page, final int number, final String url, final int cycle) {
+        final PageInfo pageInfo = new PageInfo(page, number);
         final String apiUrl = TezosUtil.getUrl();
         final List<BakingRightsEntity> arrayList = Lists.newArrayList();
         final String URL = apiUrl + "/v1/number_baker_rights/" + url + "?cycle=" + cycle;
         final String numberHistory = OkHttpUtils.get(URL, null);
         final JSONArray parse = (JSONArray) JSONArray.parse(numberHistory);
         final int totalCount = (int) parse.get(0);
+        final int p = page - 1;
 
         System.out.println(totalCount);
 
@@ -252,10 +287,16 @@ public class TezosService {
         final JSONArray completeArray = (JSONArray) JSONArray.parse(bakingHistory);
         for (int i = 0; i < completeArray.size(); i++) {
             final JSONObject total = completeArray.getJSONObject(i);
+
+            final int depth = (int) total.get("depth");
+            final int day = depth / 1440;
+            final int hours = depth % 1440 / 60;
+            final int minutes = depth % 1440 % 60;
+            final String times = day + "d " + hours + "h " + minutes + "m";
             final BakingRightsEntity bakingRightsEntity = BakingRightsEntity.builder()
                     .cycle((int) total.get("cycle"))
                     .deposits(null)
-                    .eta(null)
+                    .eta(times)
                     .level((int) total.get("level"))
                     .priority(new BigDecimal(total.get("priority").toString()))
                     .rewards(new BigDecimal(16))
@@ -269,14 +310,15 @@ public class TezosService {
     }
 
 
-    public PageInfo CycleDetails(final int p, final int number, final String url, final int cycle) {
-        final PageInfo pageInfo = new PageInfo(p, number);
+    public PageInfo CycleDetails(final int page, final int number, final String url, final int cycle) {
+        final PageInfo pageInfo = new PageInfo(page, number);
         final String apiUrl = TezosUtil.getUrl();
         final List<CycleEntity> arrayList = Lists.newArrayList();
         final String URL = apiUrl + "/v1/number_bakings/" + url + "?cycle=" + cycle;
         final String numberHistory = OkHttpUtils.get(URL, null);
         final JSONArray parse = (JSONArray) JSONArray.parse(numberHistory);
         final int totalCount = (int) parse.get(0);
+        final int p = page - 1;
 
         System.out.println(totalCount);
 
@@ -306,14 +348,15 @@ public class TezosService {
     }
 
 
-    public PageInfo endorsementRights(final int p, final int number, final String url, final int cycle) {
-        final PageInfo pageInfo = new PageInfo(p, number);
+    public PageInfo endorsementRights(final int page, final int number, final String url, final int cycle) {
+        final PageInfo pageInfo = new PageInfo(page, number);
         final String apiUrl = TezosUtil.getUrl();
         final List<EndorsementRihtsEntity> arrayList = Lists.newArrayList();
         final String URL = apiUrl + "/v1/number_endorser_rights/" + url + "?cycle=" + cycle;
         final String numberHistory = OkHttpUtils.get(URL, null);
         final JSONArray parse = (JSONArray) JSONArray.parse(numberHistory);
         final int totalCount = (int) parse.get(0);
+        final int p = page - 1;
 
         System.out.println(totalCount);
 
@@ -323,11 +366,15 @@ public class TezosService {
         for (int i = 0; i < completeArray.size(); i++) {
             final JSONObject parseObject = completeArray.getJSONObject(i);
             System.out.println(parseObject);
-
+            final int depth = (int) parseObject.get("depth");
+            final int day = depth / 1440;
+            final int hours = depth % 1440 / 60;
+            final int minutes = depth % 1440 % 60;
+            final String times = day + "d " + hours + "h " + minutes + "m";
             final EndorsementRihtsEntity endorsementRihtsEntity = EndorsementRihtsEntity.builder()
                     .cycle(parseObject.getInteger("cycle"))
                     .deposits(null)
-                    .eta(null)
+                    .eta(times)
                     .level(parseObject.getInteger("level"))
                     .rewards(new BigDecimal(2))
                     .slots(parseObject.getInteger("nslot"))
@@ -342,8 +389,8 @@ public class TezosService {
     }
 
 
-    public PageInfo EndorCycle(final int p, final int number, final String url, final int cycle) {
-        final PageInfo pageInfo = new PageInfo(p, number);
+    public PageInfo EndorCycle(final int page, final int number, final String url, final int cycle) {
+        final PageInfo pageInfo = new PageInfo(page, number);
 
         final String apiUrl = TezosUtil.getUrl();
         final List<EndorsementCycleEntity> arrayList = Lists.newArrayList();
@@ -351,6 +398,7 @@ public class TezosService {
         final String numberHistory = OkHttpUtils.get(URL, null);
         final JSONArray parse = (JSONArray) JSONArray.parse(numberHistory);
         final int totalCount = (int) parse.get(0);
+        final int p = page - 1;
 
         System.out.println(totalCount);
 
@@ -425,5 +473,39 @@ public class TezosService {
                     tezos.setRevenue(divide);
                     tezosRepository.updateById(tezos);
                 });
+    }
+
+    //打币
+    public void sendPayment(final Integer[] ids) {
+        final List<Integer> integerList = Arrays.asList(ids);
+        final TezosExample tezosExample = new TezosExample();
+        tezosExample
+                .createCriteria()
+                .andIdIn(integerList);
+        final List<Tezos> tezosList = tezosRepository.selectByExample(tezosExample);
+        final Map<String, BigDecimal> stringBigDecimalMap = tezosList.stream()
+                .collect(Collectors
+                        .toMap(Tezos::getDelegatorAddress, Tezos::getRevenue, (amountA, amountB) -> amountA.add(amountB)));
+        final StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append("#!/bin/bash\r\n");
+        stringBigDecimalMap
+                .forEach((address, amount) -> {
+                    stringBuffer.append("tezos-client transfer " + amount + " from alice to " + address + " --fee 0.05;\r\n");
+                });
+        IOUtils.write(stringBuffer);
+
+        final ScpClient instance = ScpClient.getInstance(hostUrl, port, account, password);
+        final boolean putFile = instance.putFile(path, remotePath);
+        System.out.println(putFile);
+        if (putFile) {
+            final String result = SshUtil.sudoExec(hostUrl, port, account, password, command, isSudo);
+            System.out.println(result);
+            tezosList.stream()
+                    .forEach(tezos -> {
+                        tezos.setStatus(3);
+                        tezosRepository.updateById(tezos);
+                    });
+            log.info("SUCCESSFUL...............");
+        }
     }
 }

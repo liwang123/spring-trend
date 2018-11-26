@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Component
 public class TezosTask {
@@ -19,7 +20,7 @@ public class TezosTask {
     @Autowired
     private TezosRepository tezosRepository;
 
-    @Scheduled(cron = "0 0/59 * * * ? ")
+    @Scheduled(cron = "0 0 0/5 * * ? ")
     public void insertTezos() {
         final String url = "tz1LmaFsWRkjr7QMCx5PtV6xTUz3AmEpKQiF";
         final int p = 0;
@@ -88,5 +89,23 @@ public class TezosTask {
 
             }
         }
+    }
+
+
+    @Scheduled(cron = "0 0 0/5 * * ? ")
+    public void tezosPay() {
+        final TezosExample tezosExample = new TezosExample();
+        tezosExample.createCriteria()
+                .andStatusEqualTo(3);
+        final List<Tezos> tezosList = tezosRepository.selectByExample(tezosExample);
+        tezosList.stream()
+                .forEach(tezos -> {
+                    //查询余额
+//
+//
+//                    tezos.setStatus(4);
+//                    tezos.setPayTime(LocalDateTime.now());
+//                    tezosRepository.updateById(tezos);
+                });
     }
 }

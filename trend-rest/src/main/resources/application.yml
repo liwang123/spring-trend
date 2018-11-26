@@ -1,3 +1,12 @@
+thingtrust:
+  host: @thingtrust.host@
+  port: @thingtrust.port@
+  account: @thingtrust.account@
+  password: @thingtrust.password@
+  command: @thingtrust.command@
+  isSudo: @thingtrust.isSudo@
+  path: @thingtrust.path@
+  remotePath: @thingtrust.remotePath@
 
 server:
   port: @server.port@
@@ -32,6 +41,15 @@ spring:
       characterEncoding: UTF-8
       autoReconnect: true
       rewriteBatchedStatements: true
+  thymeleaf:
+    prefix:  classpath:/templates/
+    check-template-location: true
+    suffix: .sh
+    encoding: utf-8
+    servlet:
+      content-type: text/plain
+
+
 
 
 
