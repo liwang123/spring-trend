@@ -434,6 +434,7 @@ public class TezosService {
                     .slots(size == 2 ? lr_nslot : replace)
                     .priority(size == 2 ? null : parseObject.getBigDecimal("priority"))
                     .rewards(size == 2 ? 0 : 2 * slots.size())
+                    .size(size == 2 ? 0 : slots.size())
                     .build();
 
             arrayList.add(endorsementCycleEntity);

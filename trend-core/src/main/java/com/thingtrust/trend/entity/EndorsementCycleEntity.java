@@ -24,4 +24,6 @@ public class EndorsementCycleEntity {
 
 
     private int level;
+
+    private int size;
 }
