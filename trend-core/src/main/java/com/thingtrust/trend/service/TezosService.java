@@ -472,7 +472,7 @@ public class TezosService {
         final TezosExample tezosExample = new TezosExample();
         tezosExample.createCriteria()
                 .andCycleEqualTo(cycle)
-                .andStatusNotEqualTo(4);
+                .andStatusEqualTo(1);
         final List<Tezos> tezosList = tezosRepository.selectByExample(tezosExample);
         final BigDecimal feeD = new BigDecimal(100 - fee).divide(new BigDecimal(100));
         tezosList.stream()
