@@ -19,7 +19,7 @@ public class TezosUtil {
         }
         if (status.equals("rewards_pending")) {
             //发放奖励中
-            return 3;
+            return 5;
         }
         //发放完成
         return 4;
