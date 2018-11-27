@@ -16,8 +16,9 @@ import com.thingtrust.trend.util.OkHttpUtils;
 import com.thingtrust.trend.util.TezosUtil;
 import com.thingtrust.trend.util.ssh.ScpClient;
 import com.thingtrust.trend.util.ssh.SshUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +32,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-@Slf4j
 public class TezosService {
 
     @Value("${thingtrust.host}")
@@ -61,6 +61,8 @@ public class TezosService {
     @Autowired
     private TezosRepository tezosRepository;
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     public BalanceEmtity queryBalance(final String nodeUrl) {
         final String apiUrl = TezosUtil.getUrl();
         final String url = apiUrl + "/v1/bonds_rewards/";
@@ -84,7 +86,7 @@ public class TezosService {
         final JSONObject parseBalance = (JSONObject) JSONObject.parse(balance);
         final BigDecimal balance1 = new BigDecimal((String) parseBalance.get("balance"));
         final BigDecimal add = block_rewards.add(endorsements_rewards).add(block_deposits).add(endorsement_deposits).add(block_acc_fees).add(balance1);
-
+        logger.info("QUERY BALANCE SUCCESS");
         return BalanceEmtity.builder()
                 .balance(balance1.divide(new BigDecimal(1000000)))
                 .depositsBaking(block_deposits.divide(new BigDecimal(1000000000)))
@@ -180,6 +182,8 @@ public class TezosService {
             arrayList.add(build);
 
         }
+        logger.info("QUERY bakingHistory SUCCESS");
+
         pageInfo.setListObject(arrayList);
         pageInfo.setTotals(totalCount);
         return pageInfo;
@@ -261,6 +265,7 @@ public class TezosService {
             arrayList.add(endorsementEntity);
 
         }
+        logger.info("QUERY endorsementHistory SUCCESS");
         pageInfo.setTotals(totalCount);
         pageInfo.setListObject(arrayList);
         return pageInfo;
@@ -303,6 +308,7 @@ public class TezosService {
             arrayList.add(bakingRightsEntity);
 
         }
+        logger.info("QUERY queryBakingRights SUCCESS");
         pageInfo.setListObject(arrayList);
         pageInfo.setTotals(totalCount);
         return pageInfo;
@@ -345,6 +351,8 @@ public class TezosService {
 
 
         }
+        logger.info("QUERY CycleDetails SUCCESS");
+
         pageInfo.setListObject(arrayList);
         pageInfo.setTotals(totalCount);
         return pageInfo;
@@ -386,6 +394,8 @@ public class TezosService {
 
             arrayList.add(endorsementRihtsEntity);
         }
+        logger.info("QUERY endorsementRights SUCCESS");
+
         pageInfo.setTotals(totalCount);
         pageInfo.setListObject(arrayList);
         return pageInfo;
@@ -433,6 +443,8 @@ public class TezosService {
             arrayList.add(endorsementCycleEntity);
 
         }
+        logger.info("QUERY EndorCycle SUCCESS");
+
         pageInfo.setListObject(arrayList);
         pageInfo.setTotals(totalCount);
         return pageInfo;
@@ -503,18 +515,19 @@ public class TezosService {
                 });
         IOUtils.write(stringBuffer);
 
+
         final ScpClient instance = ScpClient.getInstance(hostUrl, port, account, password);
         final boolean putFile = instance.putFile(path, remotePath);
-        log.info("传输文件" + putFile);
+        logger.info("Transfer file" + putFile);
         if (putFile) {
             final String result = SshUtil.sudoExec(hostUrl, port, account, password, command, isSudo);
-            log.info("打币结果" + result);
+            logger.info("Coinage result" + result);
             tezosList.stream()
                     .forEach(tezos -> {
                         tezos.setStatus(3);
                         tezosRepository.updateById(tezos);
                     });
-            log.info("SUCCESSFUL...............");
+            logger.info("SUCCESSFUL...............");
         }
     }
 }

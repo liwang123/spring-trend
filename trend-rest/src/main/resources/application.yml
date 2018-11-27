@@ -49,8 +49,14 @@ spring:
     servlet:
       content-type: text/plain
 
-
-
-
-
-
+#
+#logging
+#
+logging:
+  config: @logging.config@
+  path: @logging.path@
+  level:
+    default: @logging.level.default@
+    commons: '@logging.level.commons@'
+    token: '@logging.level.token@'
+    mybatis: '@logging.level.mybatis@'
