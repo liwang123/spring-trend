@@ -105,7 +105,7 @@ public class TezosService {
         final String numberHistory = OkHttpUtils.get(numberHistoryUrl, null);
         final JSONArray parse = (JSONArray) JSONArray.parse(numberHistory);
         final int totalCount = (int) parse.get(0);
-        System.out.println(totalCount);
+
         final int p = page - 1;
         final String bakingHistoryUrl = apiUrl + "/v1/bakings_history/" + url + "?p=" + p + "&number=" + number;
         final String bakingHistory = OkHttpUtils.get(bakingHistoryUrl, null);
@@ -196,9 +196,6 @@ public class TezosService {
         final JSONArray parse = (JSONArray) JSONArray.parse(numberHistory);
         final int totalCount = (int) parse.get(0);
         final int p = page - 1;
-
-        System.out.println(totalCount);
-
         final String endorHistoryUrl = apiUrl + "/v1/endorsements_history/" + url + "?p=" + p + "&number=" + number;
 
         final String bakingHistory = OkHttpUtils.get(endorHistoryUrl, null);
@@ -279,7 +276,6 @@ public class TezosService {
         final int totalCount = (int) parse.get(0);
         final int p = page - 1;
 
-        System.out.println(totalCount);
 
         final String endorHistoryUrl = apiUrl + "/v1/baker_rights/" + url + "?cycle=" + cycle + "&p=" + p + "&number=" + number;
 
@@ -329,7 +325,6 @@ public class TezosService {
         final JSONArray completeArray = (JSONArray) JSONArray.parse(bakingHistory);
         for (int i = 0; i < completeArray.size(); i++) {
             final JSONObject parseObject = completeArray.getJSONObject(i);
-            System.out.println(parseObject);
             final Boolean baked = parseObject.getBoolean("baked");
             final CycleEntity cycleEntity = CycleEntity.builder()
                     .bakeTime(baked == false ? null : parseObject.getInteger("bake_time"))
@@ -366,14 +361,12 @@ public class TezosService {
         final int totalCount = (int) parse.get(0);
         final int p = page - 1;
 
-        System.out.println(totalCount);
 
         final String endorHistoryUrl = apiUrl + "/v1/endorser_rights/" + url + "?cycle=" + cycle + "&p=" + p + "&number=" + number;
         final String bakingHistory = OkHttpUtils.get(endorHistoryUrl, null);
         final JSONArray completeArray = (JSONArray) JSONArray.parse(bakingHistory);
         for (int i = 0; i < completeArray.size(); i++) {
             final JSONObject parseObject = completeArray.getJSONObject(i);
-            System.out.println(parseObject);
             final int depth = (int) parseObject.get("depth");
             final int day = depth / 1440;
             final int hours = depth % 1440 / 60;
@@ -512,10 +505,10 @@ public class TezosService {
 
         final ScpClient instance = ScpClient.getInstance(hostUrl, port, account, password);
         final boolean putFile = instance.putFile(path, remotePath);
-        System.out.println(putFile);
+        log.info("传输文件" + putFile);
         if (putFile) {
             final String result = SshUtil.sudoExec(hostUrl, port, account, password, command, isSudo);
-            System.out.println(result);
+            log.info("打币结果" + result);
             tezosList.stream()
                     .forEach(tezos -> {
                         tezos.setStatus(3);
