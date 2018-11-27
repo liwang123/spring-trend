@@ -16,17 +16,14 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public int login(final UserEntity userEntity) {
+    public User login(final UserEntity userEntity) {
         final String password = DigestUtils.md5Hex(userEntity.getPassword());
         final UserExample userExample = new UserExample();
         userExample.createCriteria()
                 .andUsernameEqualTo(userEntity.getUsername())
                 .andPasswordEqualTo(password);
         final User user = userRepository.selectOneByExample(userExample);
-        if (user != null) {
-            return 1;
-        }
-        return 0;
+        return user;
     }
 
     public void insertUser(final UserEntity userEntity) {

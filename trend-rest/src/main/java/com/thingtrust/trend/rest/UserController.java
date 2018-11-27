@@ -2,6 +2,7 @@ package com.thingtrust.trend.rest;
 
 
 import com.thingtrust.trend.common.model.ResponseResult;
+import com.thingtrust.trend.domain.User;
 import com.thingtrust.trend.entity.UserEntity;
 import com.thingtrust.trend.service.UserService;
 import com.thingtrust.trend.util.ImageUtils.Captcha;
@@ -39,11 +40,11 @@ public class UserController {
         if (!code.toLowerCase().equals(vcode)) {
             return ResponseResult.failure(4001, "验证码不正确");
         }
-        final int login = userService.login(userEntity);
-        if (login == 0) {
+        final User login = userService.login(userEntity);
+        if (login == null) {
             return ResponseResult.failure(4001, "账号或密码错误");
         }
-        return ResponseResult.success("登录成功");
+        return ResponseResult.success(login);
     }
 
     @PostMapping("/add-user")
