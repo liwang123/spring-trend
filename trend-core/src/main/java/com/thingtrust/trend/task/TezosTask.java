@@ -31,8 +31,8 @@ public class TezosTask {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
 
-    //    @Scheduled(cron = "0 0 0/5 * * ? ")
-    @Scheduled(cron = "0 0/5 * * * ? ")
+    @Scheduled(cron = "0 0 0/5 * * ? ")
+//    @Scheduled(cron = "0 0/5 * * * ? ")
     public void insertTezos() {
         final String url = "tz1LmaFsWRkjr7QMCx5PtV6xTUz3AmEpKQiF";
         final int p = 0;
@@ -102,7 +102,7 @@ public class TezosTask {
     }
 
 
-    @Scheduled(cron = "0 0/1 * * * ? ")
+    @Scheduled(cron = "0 0/3 * * * ? ")
     public void tezosPay() {
         final int p = 0;
         final int number = 10000;
