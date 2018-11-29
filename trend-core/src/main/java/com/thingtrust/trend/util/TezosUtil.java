@@ -26,31 +26,31 @@ public class TezosUtil {
     }
 
 
-    public static String getStatus(final int status) {
-        if (status == 1) {
-            //未开始烘焙
-            return "Estimated";
-        }
-        if (status == 2) {
-            //烘焙中
-            return "Roasting";
-        }
-        if (status == 3) {
-            //发放奖励中
-            return "Paying";
-        }
-        if (status == 4) {
-            //发放完成
-            return "Paid";
-        }
-        //未发放
-        if (status == 5) {
-            return "Frozen";
-        }
-        if (status == 6) {
-            //发放失败
-            return "Failure";
-        }
-        return null;
-    }
+//    public static String getStatus(final int status) {
+//        if (status == 1) {
+//            //未开始烘焙
+//            return "Estimated";
+//        }
+//        if (status == 2) {
+//            //烘焙中
+//            return "Roasting";
+//        }
+//        if (status == 3) {
+//            //发放奖励中
+//            return "Paying";
+//        }
+//        if (status == 4) {
+//            //发放完成
+//            return "Paid";
+//        }
+//        //未发放
+//        if (status == 5) {
+//            return "Frozen";
+//        }
+//        if (status == 6) {
+//            //发放失败
+//            return "Failure";
+//        }
+//        return null;
+//    }
 }

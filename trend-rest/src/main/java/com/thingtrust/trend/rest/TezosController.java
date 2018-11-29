@@ -2,6 +2,7 @@ package com.thingtrust.trend.rest;
 
 import com.thingtrust.trend.common.model.ResponseResult;
 import com.thingtrust.trend.common.mybatis.pager.PageInfo;
+import com.thingtrust.trend.dto.TezosStatusDTO;
 import com.thingtrust.trend.entity.BalanceEmtity;
 import com.thingtrust.trend.service.TezosService;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/tezos")
@@ -81,6 +84,12 @@ public class TezosController {
     public ResponseResult sendPayment(final Integer[] ids) {
         tezosService.sendPayment(ids);
         return ResponseResult.success();
+    }
+
+    @GetMapping("/query-status")
+    public ResponseResult queryStatus(final Integer[] ids) {
+        final List<TezosStatusDTO> tezosStatusDTOList = tezosService.queryStatus(ids);
+        return ResponseResult.success(tezosStatusDTOList);
     }
 
 

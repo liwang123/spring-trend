@@ -10,7 +10,9 @@ import com.thingtrust.trend.domain.Tezos;
 import com.thingtrust.trend.domain.example.TezosExample;
 import com.thingtrust.trend.dto.BakingDTO;
 import com.thingtrust.trend.dto.TezosDTO;
+import com.thingtrust.trend.dto.TezosStatusDTO;
 import com.thingtrust.trend.entity.*;
+import com.thingtrust.trend.enume.TezostatesEnum;
 import com.thingtrust.trend.util.IOUtils;
 import com.thingtrust.trend.util.OkHttpUtils;
 import com.thingtrust.trend.util.TezosUtil;
@@ -469,7 +471,7 @@ public class TezosService {
                 .forEach(tezos -> {
                     final TezosDTO tezosDTO = TezosDTO.builder().build();
                     BeanUtils.copyProperties(tezos, tezosDTO);
-                    tezosDTO.setStatus(TezosUtil.getStatus(tezos.getStatus()));
+                    tezosDTO.setStatus(TezostatesEnum.getTezos(tezos.getStatus()));
                     tezosDTO.setPayTime(tezos.getPayTime() == null ? null : tezos.getPayTime().toString().replaceAll("T", " "));
                     tezosDTOArrayList.add(tezosDTO);
                 });
@@ -496,7 +498,6 @@ public class TezosService {
                 });
     }
 
-    //打币
     public void sendPayment(final Integer[] ids) {
         final List<Integer> integerList = Arrays.asList(ids);
         final TezosExample tezosExample = new TezosExample();
@@ -511,23 +512,50 @@ public class TezosService {
         stringBuffer.append("#!/bin/bash\r\n");
         stringBigDecimalMap
                 .forEach((address, amount) -> {
-                    stringBuffer.append("tezos-client transfer " + amount + " from alice to " + address + " --fee 0.05;\r\n");
+                    stringBuffer.append("tezos-client transfer " + amount + " from scott to " + address + ";\r\n");
                 });
         IOUtils.write(stringBuffer);
-
-
         final ScpClient instance = ScpClient.getInstance(hostUrl, port, account, password);
         final boolean putFile = instance.putFile(path, remotePath);
         logger.info("Transfer file" + putFile);
         if (putFile) {
-            final String result = SshUtil.sudoExec(hostUrl, port, account, password, command, isSudo);
-            logger.info("Coinage result" + result);
             tezosList.stream()
                     .forEach(tezos -> {
-                        tezos.setStatus(3);
+                        tezos.setStatus(TezostatesEnum.PAYING.getCode());
                         tezosRepository.updateById(tezos);
                     });
+            final String result = SshUtil.sudoExec(hostUrl, port, account, password, command, isSudo);
+            logger.info("Coinage result" + result);
             logger.info("SUCCESSFUL...............");
+        } else {
+            logger.info("FAILER...............");
+            tezosList.stream()
+                    .forEach(tezos -> {
+                        tezos.setStatus(TezostatesEnum.FAILURE.getCode());
+                        tezosRepository.updateById(tezos);
+                    });
         }
+    }
+
+    public List<TezosStatusDTO> queryStatus(final Integer[] ids) {
+        final List<Integer> integerList = Arrays.asList(ids);
+        final TezosExample tezosExample = new TezosExample();
+        tezosExample.createCriteria()
+                .andIdIn(integerList);
+        final List<Tezos> tezosList = tezosRepository.selectByExample(tezosExample);
+        final List<TezosStatusDTO> arrayList = Lists.newArrayList();
+        tezosList.stream()
+                .forEach(tezos -> {
+                    final TezosStatusDTO tezosStatusDTO = TezosStatusDTO.builder()
+                            .delegatorAddress(tezos.getDelegatorAddress())
+                            .cycle(tezos.getCycle())
+                            .id(tezos.getId())
+                            .revenue(tezos.getRevenue())
+                            .status(TezostatesEnum.getTezos(tezos.getStatus()))
+                            .payTime(tezos.getPayTime() == null ? null : tezos.getPayTime().toString().replaceAll("T", " "))
+                            .build();
+                    arrayList.add(tezosStatusDTO);
+                });
+        return arrayList;
     }
 }
