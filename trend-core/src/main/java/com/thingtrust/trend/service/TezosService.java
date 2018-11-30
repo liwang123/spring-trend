@@ -146,6 +146,15 @@ public class TezosService {
                     if (bakingDTO.getCycle() == 52) {
                         bakingEntity.setDeposits(new BigDecimal(4160));
                     }
+                    if (bakingDTO.getCycle() == 53) {
+                        bakingEntity.setDeposits(new BigDecimal(3816));
+                    }
+                    if (bakingDTO.getCycle() == 54) {
+                        bakingEntity.setDeposits(new BigDecimal(3024));
+                    }
+                    if (bakingDTO.getCycle() == 55) {
+                        bakingEntity.setDeposits(new BigDecimal(4400));
+                    }
                     arrayList.add(bakingEntity);
                 });
         //get(2)
@@ -233,6 +242,25 @@ public class TezosService {
                             .rewards(new BigDecimal(bakingDTO.getPriority().intValue() * 2))
                             .status(0)
                             .build();
+
+                    if (bakingDTO.getCycle() == 50) {
+                        endorsementEntity.setDeposits(new BigDecimal(3600));
+                    }
+                    if (bakingDTO.getCycle() == 51) {
+                        endorsementEntity.setDeposits(new BigDecimal(19074));
+                    }
+                    if (bakingDTO.getCycle() == 52) {
+                        endorsementEntity.setDeposits(new BigDecimal(13104));
+                    }
+                    if (bakingDTO.getCycle() == 53) {
+                        endorsementEntity.setDeposits(new BigDecimal(16589));
+                    }
+                    if (bakingDTO.getCycle() == 54) {
+                        endorsementEntity.setDeposits(new BigDecimal(16200));
+                    }
+                    if (bakingDTO.getCycle() == 55) {
+                        endorsementEntity.setDeposits(new BigDecimal(16940));
+                    }
                     arrayList.add(endorsementEntity);
                 });
 
