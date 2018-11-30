@@ -137,6 +137,15 @@ public class TezosService {
                             .rewards(new BigDecimal(bakingDTO.getNblocks() * 16))
                             .status(0)
                             .build();
+                    if (bakingDTO.getCycle() == 50) {
+                        bakingEntity.setDeposits(new BigDecimal(800));
+                    }
+                    if (bakingDTO.getCycle() == 51) {
+                        bakingEntity.setDeposits(new BigDecimal(3672));
+                    }
+                    if (bakingDTO.getCycle() == 52) {
+                        bakingEntity.setDeposits(new BigDecimal(4160));
+                    }
                     arrayList.add(bakingEntity);
                 });
         //get(2)
