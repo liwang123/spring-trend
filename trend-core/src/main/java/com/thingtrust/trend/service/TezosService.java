@@ -125,39 +125,21 @@ public class TezosService {
         }
         final JSONArray futureArray = JSON.parseArray(future);
         final List<BakingDTO> bakingDTOS = JSONObject.parseArray(futureArray.toJSONString(), BakingDTO.class);
-        bakingDTOS.stream()
-                .forEach(bakingDTO -> {
-                    final BakingEntity bakingEntity = BakingEntity.builder()
-                            .bakeTime(null)
-                            .blocks(bakingDTO.getNblocks())
-                            .cycle(bakingDTO.getCycle())
-                            .deposits(null)
-                            .priority(bakingDTO.getPriority().setScale(2, BigDecimal.ROUND_HALF_UP))
-                            .missSteal(null)
-                            .rewards(new BigDecimal(bakingDTO.getNblocks() * 16))
-                            .status(0)
-                            .build();
-                    //删除
-                    if (bakingDTO.getCycle() == 50) {
-                        bakingEntity.setDeposits(new BigDecimal(800));
-                    }
-                    if (bakingDTO.getCycle() == 51) {
-                        bakingEntity.setDeposits(new BigDecimal(3672));
-                    }
-                    if (bakingDTO.getCycle() == 52) {
-                        bakingEntity.setDeposits(new BigDecimal(4160));
-                    }
-                    if (bakingDTO.getCycle() == 53) {
-                        bakingEntity.setDeposits(new BigDecimal(3816));
-                    }
-                    if (bakingDTO.getCycle() == 54) {
-                        bakingEntity.setDeposits(new BigDecimal(3024));
-                    }
-                    if (bakingDTO.getCycle() == 55) {
-                        bakingEntity.setDeposits(new BigDecimal(4400));
-                    }
-                    arrayList.add(bakingEntity);
-                });
+        for (final BakingDTO bakingDTO : bakingDTOS) {
+            final int cycle = bakingDTO.getCycle();
+            final int nblocks = bakingDTO.getNblocks();
+            final BakingEntity bakingEntity = BakingEntity.builder()
+                    .bakeTime(null)
+                    .blocks(nblocks)
+                    .cycle(bakingDTO.getCycle())
+                    .deposits(new BigDecimal(cycle * 8 * nblocks))
+                    .priority(bakingDTO.getPriority().setScale(2, BigDecimal.ROUND_HALF_UP))
+                    .missSteal(null)
+                    .rewards(new BigDecimal(bakingDTO.getNblocks() * 16))
+                    .status(0)
+                    .build();
+            arrayList.add(bakingEntity);
+        }
         //get(2)
         final String complete = JSON.toJSONString(history.get(2));
         final JSONArray completeArray = JSON.parseArray(complete);
@@ -234,15 +216,17 @@ public class TezosService {
         final List<BakingDTO> bakingDTOS = JSONObject.parseArray(futureArray.toJSONString(), BakingDTO.class);
         bakingDTOS.stream()
                 .forEach(bakingDTO -> {
+                    final int cycle = bakingDTO.getCycle();
                     final EndorsementEntity endorsementEntity = EndorsementEntity.builder()
                             .miss(null)
                             .slots(bakingDTO.getPriority().intValue())
-                            .deposits(null)
-                            .cycle(bakingDTO.getCycle())
+                            .deposits(new BigDecimal(cycle * bakingDTO.getPriority().intValue()))
+                            .cycle(cycle)
                             .priority(null)
                             .rewards(new BigDecimal(bakingDTO.getPriority().intValue() * 2))
                             .status(0)
                             .build();
+
                     arrayList.add(endorsementEntity);
                 });
 
@@ -319,44 +303,14 @@ public class TezosService {
                 times = hours + "h " + minutes + "m";
             }
 
-
             final BakingRightsEntity bakingRightsEntity = BakingRightsEntity.builder()
                     .cycle(total.getInteger("cycle"))
-                    .deposits(null)
+                    .deposits(new BigDecimal(cycle * 8))
                     .eta(times)
                     .level(total.getInteger("level"))
                     .priority(total.getBigDecimal("priority"))
                     .rewards(new BigDecimal(16))
                     .build();
-            //删除
-            //删除
-            BigDecimal bakingRights = null;
-
-            if (cycle == 50) {
-                bakingRights = new BigDecimal(800);
-                bakingRightsEntity.setDeposits(bakingRights.divide(new BigDecimal(2)));
-            }
-            if (cycle == 51) {
-                bakingRights = new BigDecimal(3672);
-                bakingRightsEntity.setDeposits(bakingRights.divide(new BigDecimal(9)));
-            }
-            if (cycle == 52) {
-                bakingRights = new BigDecimal(4160);
-                bakingRightsEntity.setDeposits(bakingRights.divide(new BigDecimal(10)));
-            }
-            if (cycle == 53) {
-                bakingRights = new BigDecimal(3816);
-                bakingRightsEntity.setDeposits(bakingRights.divide(new BigDecimal(9)));
-            }
-            if (cycle == 54) {
-                bakingRights = new BigDecimal(3024);
-                bakingRightsEntity.setDeposits(bakingRights.divide(new BigDecimal(7)));
-            }
-            if (cycle == 55) {
-                bakingRights = new BigDecimal(4400);
-                bakingRightsEntity.setDeposits(bakingRights.divide(new BigDecimal(10)));
-            }
-
             arrayList.add(bakingRightsEntity);
 
         }
@@ -435,13 +389,14 @@ public class TezosService {
             if (day == 0) {
                 times = hours + "h " + minutes + "m";
             }
+            final Integer nslot = parseObject.getInteger("nslot");
             final EndorsementRihtsEntity endorsementRihtsEntity = EndorsementRihtsEntity.builder()
                     .cycle(parseObject.getInteger("cycle"))
-                    .deposits(null)
+                    .deposits(new BigDecimal(nslot * cycle))
                     .eta(times)
                     .level(parseObject.getInteger("level"))
                     .rewards(new BigDecimal(2))
-                    .slots(parseObject.getInteger("nslot"))
+                    .slots(nslot)
                     .build();
             arrayList.add(endorsementRihtsEntity);
         }
