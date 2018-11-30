@@ -463,35 +463,34 @@ public class TezosService {
                     .slots(parseObject.getInteger("nslot"))
                     .build();
             //删除
-            BigDecimal bakingRights = null;
 
             if (cycle == 50) {
-                bakingRights = new BigDecimal(3350);
-                endorsementRihtsEntity.setDeposits(bakingRights.divide(new BigDecimal(69)).multiply(new BigDecimal(parseObject.getInteger("nslot"))));
+                final BigDecimal bakingRights = new BigDecimal(3350);
+                endorsementRihtsEntity.setDeposits(bakingRights.divide(new BigDecimal(67), BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(parseObject.getInteger("nslot"))));
             }
             if (cycle == 51) {
-                bakingRights = new BigDecimal(19074);
-                endorsementRihtsEntity.setDeposits(bakingRights.divide(new BigDecimal(374)).multiply(new BigDecimal(parseObject.getInteger("nslot"))));
+                final BigDecimal bakingRights = new BigDecimal(19074);
+                endorsementRihtsEntity.setDeposits(bakingRights.divide(new BigDecimal(374), BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(parseObject.getInteger("nslot"))));
 
             }
             if (cycle == 52) {
-                bakingRights = new BigDecimal(13104);
-                endorsementRihtsEntity.setDeposits(bakingRights.divide(new BigDecimal(252)).multiply(new BigDecimal(parseObject.getInteger("nslot"))));
+                final BigDecimal bakingRights = new BigDecimal(13104);
+                endorsementRihtsEntity.setDeposits(bakingRights.divide(new BigDecimal(252), BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(parseObject.getInteger("nslot"))));
 
             }
             if (cycle == 53) {
-                bakingRights = new BigDecimal(16589);
-                endorsementRihtsEntity.setDeposits(bakingRights.divide(new BigDecimal(313)).multiply(new BigDecimal(parseObject.getInteger("nslot"))));
+                final BigDecimal bakingRights = new BigDecimal(16589);
+                endorsementRihtsEntity.setDeposits(bakingRights.divide(new BigDecimal(313), BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(parseObject.getInteger("nslot"))));
 
             }
             if (cycle == 54) {
-                bakingRights = new BigDecimal(16200);
-                endorsementRihtsEntity.setDeposits(bakingRights.divide(new BigDecimal(300)).multiply(new BigDecimal(parseObject.getInteger("nslot"))));
+                final BigDecimal bakingRights = new BigDecimal(16200);
+                endorsementRihtsEntity.setDeposits(bakingRights.divide(new BigDecimal(300), BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(parseObject.getInteger("nslot"))));
 
             }
             if (cycle == 55) {
-                bakingRights = new BigDecimal(16940);
-                endorsementRihtsEntity.setDeposits(bakingRights.divide(new BigDecimal(308)).multiply(new BigDecimal(parseObject.getInteger("nslot"))));
+                final BigDecimal bakingRights = new BigDecimal(16940);
+                endorsementRihtsEntity.setDeposits(bakingRights.divide(new BigDecimal(308), BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(parseObject.getInteger("nslot"))));
             }
             arrayList.add(endorsementRihtsEntity);
         }
