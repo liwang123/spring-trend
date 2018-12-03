@@ -48,6 +48,16 @@ spring:
     encoding: utf-8
     servlet:
       content-type: text/plain
+  mail:
+    host: @spring.mail.host@
+    username: '@spring.mail.username@'
+    password: '@spring.mail.password@'
+    default-encoding: utf-8
+    port: @spring.mail.port@
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.ssl.enable: true
+    protocol: smtp
 
 #
 #logging

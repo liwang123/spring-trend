@@ -2,8 +2,11 @@ package com.thingtrust.trend.task;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.thingtrust.trend.data.MailRepository;
 import com.thingtrust.trend.data.TezosRepository;
+import com.thingtrust.trend.domain.Mail;
 import com.thingtrust.trend.domain.Tezos;
+import com.thingtrust.trend.domain.example.MailExample;
 import com.thingtrust.trend.domain.example.TezosExample;
 import com.thingtrust.trend.enume.TezostatesEnum;
 import com.thingtrust.trend.util.OkHttpUtils;
@@ -11,6 +14,9 @@ import com.thingtrust.trend.util.TezosUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +33,16 @@ public class TezosTask {
 
     @Autowired
     private TezosRepository tezosRepository;
+
+    @Autowired
+    private MailRepository mailRepository;
+
+
+    @Autowired
+    private JavaMailSender mailSender;
+
+    @Value("${spring.mail.username}")
+    private String from;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -181,4 +197,60 @@ public class TezosTask {
                     }
                 });
     }
+
+    @Scheduled(cron = "0 0/10 * * * ? ")
+    public void insertSendMail() {
+        final String apiUrl = TezosUtil.getUrl();
+        final Mail mail = mailRepository.selectOneByExample(null);
+        final Integer cycle = mail.getCycle();
+        for (int j = cycle + 1; j < cycle + 5; j++) {
+            final String URL = apiUrl + "/v1/number_bakings/tz1LmaFsWRkjr7QMCx5PtV6xTUz3AmEpKQiF?cycle=" + j;
+            final String numberHistory = OkHttpUtils.get(URL, null);
+            final JSONArray parse = (JSONArray) JSONArray.parse(numberHistory);
+            final int totalCount = (int) parse.get(0);
+            if (totalCount != 0) {
+                final String endorHistoryUrl = apiUrl + "/v1/bakings/tz1LmaFsWRkjr7QMCx5PtV6xTUz3AmEpKQiF?cycle=" + j + "&p=" + 0 + "&number=" + totalCount;
+                final String bakingHistory = OkHttpUtils.get(endorHistoryUrl, null);
+                final JSONArray completeArray = (JSONArray) JSONArray.parse(bakingHistory);
+                for (int i = 0; i < completeArray.size(); i++) {
+                    final JSONObject parseObject = completeArray.getJSONObject(i);
+                    final Boolean baked = parseObject.getBoolean("baked");
+                    final Integer level = parseObject.getInteger("level");
+                    if (!baked) {
+                        final Mail mail1 = Mail.builder()
+                                .cycle(j)
+                                .level(level)
+                                .build();
+                        mailRepository.insert(mail1);
+                    }
+                }
+            } else {
+                return;
+            }
+        }
+    }
+
+    @Scheduled(cron = "0 0/10 * * * ? ")
+    public void sendMail() {
+        final MailExample mailExample = new MailExample();
+        mailExample
+                .createCriteria()
+                .andSendStatusEqualTo(1);
+        final List<Mail> mailList = mailRepository.selectByExample(mailExample);
+        final SimpleMailMessage message = new SimpleMailMessage();
+        mailList.stream()
+                .forEach(mail -> {
+                    logger.info("SEND--------" + from);
+                    final String content = "tezos烘焙出现错误块,轮次:" + mail.getCycle() + ",level:" + mail.getLevel();
+                    message.setFrom(from);
+                    message.setTo("yunchun_liu@163.com");
+                    message.setSubject("主题：tezos邮件");
+                    message.setText(content);
+                    mailSender.send(message);
+                    mail.setSendStatus(2);
+                    mailRepository.updateById(mail);
+                });
+    }
+
+
 }
