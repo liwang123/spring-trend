@@ -2,7 +2,10 @@ package com.thingtrust.trend.util;
 
 public class TezosUtil {
     public static String getUrl() {
-        final int apiNumber = (int) (Math.random() * 4) + 1;
+        int apiNumber = (int) (Math.random() * 4) + 1;
+        if (apiNumber == 4) {
+            apiNumber = (int) (Math.random() * 3) + 1;
+        }
         final String apiUrl = "http://api" + apiNumber + ".tzscan.io";
         return apiUrl;
     }
