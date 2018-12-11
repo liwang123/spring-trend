@@ -516,7 +516,7 @@ public class TezosService {
         stringBuffer.append("#!/bin/bash\r\n");
         stringBigDecimalMap
                 .forEach((address, amount) -> {
-                    stringBuffer.append("tezos-client transfer " + amount + " from scott to " + address + ";\r\n");
+                    stringBuffer.append("tezos-client transfer " + amount + " from alice to " + address + ";\r\n");
                 });
         IOUtils.write(stringBuffer);
         final ScpClient instance = ScpClient.getInstance(hostUrl, port, account, password);
