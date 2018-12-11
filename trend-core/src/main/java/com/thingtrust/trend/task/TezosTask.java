@@ -53,7 +53,7 @@ public class TezosTask {
         final int p = 0;
         final int number = 10000;
 //        final String apiUrl = TezosUtil.getUrl();
-        final String apiUrl = "https://api.zeronet.tzscan.io";
+        final String apiUrl = "http://api.zeronet.tzscan.io";
         final String endorHistoryUrl = apiUrl + "/v2/rewards_split_cycles/" + url + "?p=" + p + "&number=" + number;
         final String bakingHistory = OkHttpUtils.get(endorHistoryUrl, null);
         final JSONArray completeArray = (JSONArray) JSONArray.parse(bakingHistory);
@@ -124,7 +124,7 @@ public class TezosTask {
 //        final String apiUrl = TezosUtil.getUrl();
 //        final String addressUrl = "tz1LmaFsWRkjr7QMCx5PtV6xTUz3AmEpKQiF";
         final String addressUrl = "tz1eaNWNYXBLmangkXyAyQJ27C6rzZuXdgd7";
-        final String apiUrl = "https://api.zeronet.tzscan.io";
+        final String apiUrl = "http://api.zeronet.tzscan.io";
 
 
         final TezosExample tezosExample = new TezosExample();
