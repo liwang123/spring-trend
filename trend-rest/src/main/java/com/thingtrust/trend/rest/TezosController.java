@@ -75,8 +75,8 @@ public class TezosController {
 
     @GetMapping("/set-fee")
     public ResponseResult setFee(final int cycle, final int fee) {
-        tezosService.setFee(cycle, fee);
-        return ResponseResult.success();
+        final int i = tezosService.setFee(cycle, fee);
+        return ResponseResult.success(i);
     }
 
 

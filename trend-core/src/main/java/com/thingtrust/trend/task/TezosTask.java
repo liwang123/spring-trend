@@ -168,7 +168,7 @@ public class TezosTask {
                                     final BigDecimal amount1 = jsonObject.getBigDecimal("amount");
                                     final BigDecimal divide = amount1.divide(new BigDecimal(1000000));
                                     logger.info(divide + "-------" + amount);
-                                    if (divide.compareTo(amount) == 0) {
+                                    if (divide.compareTo(amount) != -1) {
                                         flag = true;
                                         final TezosExample tezosExample1 = new TezosExample();
                                         tezosExample1.createCriteria()

@@ -486,7 +486,14 @@ public class TezosService {
 
     }
 
-    public void setFee(final int cycle, final int fee) {
+    public int setFee(final int cycle, final int fee) {
+        final TezosExample tezosExample1 = new TezosExample();
+        tezosExample1.createCriteria()
+                .andCycleEqualTo(cycle);
+        final Tezos tezos1 = tezosRepository.selectOneByExample(tezosExample1);
+        if (tezos1.getStatus() != 1) {
+            return 1;
+        }
         final TezosExample tezosExample = new TezosExample();
         tezosExample.createCriteria()
                 .andCycleEqualTo(cycle)
@@ -500,6 +507,7 @@ public class TezosService {
                     tezos.setRevenue(divide);
                     tezosRepository.updateById(tezos);
                 });
+        return 0;
     }
 
     public void sendPayment(final Integer[] ids) {
