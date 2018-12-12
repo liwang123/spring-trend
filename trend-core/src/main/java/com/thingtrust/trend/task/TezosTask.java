@@ -45,15 +45,13 @@ public class TezosTask {
 
 
     //    @Scheduled(cron = "0 0 0/5 * * ? ")
-    @Scheduled(cron = "0 0/5 * * * ? ")
+    @Scheduled(cron = "0 0/10 * * * ? ")
 //    @Scheduled(cron = "0/59 * * * * ? ")
     public void insertTezos() {
-//        final String url = "tz1LmaFsWRkjr7QMCx5PtV6xTUz3AmEpKQiF";
-        final String url = "tz1UKmZhi8dhUX5a5QTfCrsH9pK4dt1dVfJo";
+        final String url = "tz1LmaFsWRkjr7QMCx5PtV6xTUz3AmEpKQiF";
         final int p = 0;
         final int number = 10000;
-//        final String apiUrl = TezosUtil.getUrl();
-        final String apiUrl = "http://api.zeronet.tzscan.io";
+        final String apiUrl = TezosUtil.getUrl();
         final String endorHistoryUrl = apiUrl + "/v2/rewards_split_cycles/" + url + "?p=" + p + "&number=" + number;
         final String bakingHistory = OkHttpUtils.get(endorHistoryUrl, null);
         final JSONArray completeArray = (JSONArray) JSONArray.parse(bakingHistory);
@@ -121,12 +119,8 @@ public class TezosTask {
     public void tezosPay() {
         final int p = 0;
         final int number = 10000;
-//        final String apiUrl = TezosUtil.getUrl();
-//        final String addressUrl = "tz1LmaFsWRkjr7QMCx5PtV6xTUz3AmEpKQiF";
-        final String addressUrl = "tz1eaNWNYXBLmangkXyAyQJ27C6rzZuXdgd7";
-        final String apiUrl = "http://api.zeronet.tzscan.io";
-
-
+        final String apiUrl = TezosUtil.getUrl();
+        final String addressUrl = "tz1LmaFsWRkjr7QMCx5PtV6xTUz3AmEpKQiF";
         final TezosExample tezosExample = new TezosExample();
         final Integer[] array = {1, 2, 4, 5};
         final List<Integer> integerList = Arrays.asList(array);
