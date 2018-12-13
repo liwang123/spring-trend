@@ -82,7 +82,7 @@ public class TezosTask {
                     final BigDecimal revelation_rewards = parseObject.getBigDecimal("revelation_rewards");
 
                     final BigDecimal add = blocks_rewards.add(endorsements_rewards).add(future_baking_rewards).add(future_endorsing_rewards);
-                    final BigDecimal bigDecimal = amount.divide(delegate_staking_balance, 4, BigDecimal.ROUND_UP).setScale(4, BigDecimal.ROUND_UP);
+                    final BigDecimal bigDecimal = amount.divide(delegate_staking_balance, 4, BigDecimal.ROUND_DOWN).setScale(4, BigDecimal.ROUND_UP);
                     final BigDecimal reward = add.multiply(bigDecimal).divide(new BigDecimal(1000000), 2, BigDecimal.ROUND_UP);
                     final BigDecimal revenue = reward.multiply(new BigDecimal(0.85));
 
@@ -103,7 +103,7 @@ public class TezosTask {
                                 .build();
                         tezosRepository.insert(tezos);
                     } else {
-                        if (tezosOne.getStatus() != TezostatesEnum.PAIED.getCode() && tezosOne.getStatus() != TezostatesEnum.PAYING.getCode() && tezosOne.getStatus() != TezostatesEnum.FAILURE.getCode()) {
+                        if (tezosOne.getStatus() != TezostatesEnum.PAIED.getCode() && tezosOne.getStatus() != TezostatesEnum.PAYING.getCode() && tezosOne.getStatus() != TezostatesEnum.FAILURE.getCode() && tezosOne.getStatus() != TezostatesEnum.FROZEN.getCode()) {
                             tezosOne.setStatus(TezosUtil.getStatus(status));
                             tezosRepository.updateById(tezosOne);
                         }
