@@ -82,10 +82,10 @@ public class TezosTask {
                     final BigDecimal revelation_rewards = parseObject.getBigDecimal("revelation_rewards");
 
                     final BigDecimal add = blocks_rewards.add(endorsements_rewards).add(future_baking_rewards).add(future_endorsing_rewards);
-                    final BigDecimal bigDecimal = amount.divide(delegate_staking_balance, 4, BigDecimal.ROUND_DOWN).setScale(4, BigDecimal.ROUND_DOWN);
-                    final BigDecimal reward = add.multiply(bigDecimal).divide(new BigDecimal(1000000), 2, BigDecimal.ROUND_DOWN);
+                    final BigDecimal bigDecimal = amount.divide(delegate_staking_balance, 4, BigDecimal.ROUND_UP).setScale(4, BigDecimal.ROUND_UP);
+                    final BigDecimal reward = add.multiply(bigDecimal).divide(new BigDecimal(1000000), 2, BigDecimal.ROUND_UP);
                     final BigDecimal revenue = reward.multiply(new BigDecimal(0.85));
-                    System.out.println(address + "-------" + reward);
+
                     final TezosExample tezosExample = new TezosExample();
                     tezosExample.createCriteria()
                             .andCycleEqualTo(cycleCount)
