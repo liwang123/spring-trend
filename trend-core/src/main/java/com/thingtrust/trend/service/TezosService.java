@@ -491,7 +491,7 @@ public class TezosService {
         tezosExample1.createCriteria()
                 .andCycleEqualTo(cycle);
         final Tezos tezos1 = tezosRepository.selectOneByExample(tezosExample1);
-        if (tezos1.getStatus() != 1) {
+        if (tezos1.getStatus() != 1 && tezos1.getStatus() != 5) {
             return 1;
         }
         final TezosExample tezosExample = new TezosExample();

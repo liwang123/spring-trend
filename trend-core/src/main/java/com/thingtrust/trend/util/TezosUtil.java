@@ -18,7 +18,7 @@ public class TezosUtil {
         }
         if (status.equals("cycle_in_progress")) {
             //烘焙中
-            return 2;
+            return 1;
         }
         if (status.equals("rewards_pending")) {
             //等待发放奖励
