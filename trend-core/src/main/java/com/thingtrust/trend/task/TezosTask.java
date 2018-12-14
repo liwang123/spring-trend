@@ -175,6 +175,7 @@ public class TezosTask {
                                                     tezos.setPayTime(localDateTime);
                                                     tezosRepository.updateById(tezos);
                                                 });
+
                                     }
                                 }
 
