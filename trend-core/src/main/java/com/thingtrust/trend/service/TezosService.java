@@ -16,7 +16,6 @@ import com.thingtrust.trend.enume.TezostatesEnum;
 import com.thingtrust.trend.util.IOUtils;
 import com.thingtrust.trend.util.OkHttpUtils;
 import com.thingtrust.trend.util.TezosUtil;
-import com.thingtrust.trend.util.ssh.ScpClient;
 import com.thingtrust.trend.util.ssh.SshUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -528,26 +527,19 @@ public class TezosService {
                     stringBuffer.append("tezos-client transfer " + amount + " from payout to " + address + ";\r\n");
                 });
         IOUtils.write(stringBuffer);
-        final ScpClient instance = ScpClient.getInstance(hostUrl, port, account, password);
-        final boolean putFile = instance.putFile(path, remotePath);
-        logger.info("Transfer file" + putFile);
-        if (putFile) {
+//        final ScpClient instance = ScpClient.getInstance(hostUrl, port, account, password);
+//        final boolean putFile = instance.putFile(path, remotePath);
+//        logger.info("Transfer file" + putFile);
+//        if (putFile) {
             tezosList.stream()
                     .forEach(tezos -> {
                         tezos.setStatus(TezostatesEnum.PAYING.getCode());
                         tezosRepository.updateById(tezos);
                     });
             final String result = SshUtil.sudoExec(hostUrl, port, account, password, command, isSudo);
-            logger.info("Coinage result" + result);
-            logger.info("SUCCESSFUL...............");
-        } else {
-            logger.info("FAILER...............");
-            tezosList.stream()
-                    .forEach(tezos -> {
-                        tezos.setStatus(TezostatesEnum.FAILURE.getCode());
-                        tezosRepository.updateById(tezos);
-                    });
-        }
+        logger.info("Coinage result" + result);
+        logger.info("SUCCESSFUL...............");
+        logger.info("FAILER...............");
     }
 
     public List<TezosStatusDTO> queryStatus(final Integer[] ids) {
