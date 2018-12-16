@@ -8,7 +8,7 @@ public class IOUtils {
     public static void write(final StringBuffer stringBuffer) {
         try {
             /* 写入Txt文件 */
-            final File writename = new File("/Users/liwang/IdeaProjects/springboot-trend/trend-core/src/main/resources/templates/payment.sh");
+            final File writename = new File("/home/payout/spring-trend/trend-core/src/main/resources/templates/payment.sh");
             writename.createNewFile(); // 创建新文件
             final BufferedWriter out = new BufferedWriter(new FileWriter(writename));
             out.write(stringBuffer.toString());
