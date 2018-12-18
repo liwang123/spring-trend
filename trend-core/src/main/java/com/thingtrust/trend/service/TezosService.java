@@ -522,10 +522,14 @@ public class TezosService {
                         .toMap(Tezos::getDelegatorAddress, Tezos::getRevenue, (amountA, amountB) -> amountA.add(amountB)));
         final StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append("#!/bin/bash\r\n");
+        final String temp = "\r";
         stringBigDecimalMap
                 .forEach((address, amount) -> {
-                    stringBuffer.append("tezos-client transfer " + amount + " from payout to " + address + ";\r\n");
+                    stringBuffer.append("spawn tezos-client transfer " + amount + " from payout to " + address + ";\r\n");
+                    stringBuffer.append("expect 'Enter password for encrypted key:'\r\n");
+                    stringBuffer.append("send " + JSONObject.toJSONString(temp) + "\r\n");
                 });
+        stringBuffer.append("interact");
         IOUtils.write(stringBuffer);
 //        final ScpClient instance = ScpClient.getInstance(hostUrl, port, account, password);
 //        final boolean putFile = instance.putFile(path, remotePath);
