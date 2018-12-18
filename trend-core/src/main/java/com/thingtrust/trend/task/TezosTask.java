@@ -120,7 +120,7 @@ public class TezosTask {
         final int p = 0;
         final int number = 10000;
         final String apiUrl = TezosUtil.getUrl();
-        final String addressUrl = "KT1QzXaoMkhqHtUP1gB5hnUsjmFyByWQTmog";
+        final String addressUrl = "tz1c5q1xLQ6kKV5Lgk7DqvVwMVWfik7ARQP4";
         final TezosExample tezosExample = new TezosExample();
         final Integer[] array = {1, 2, 4, 5};
         final List<Integer> integerList = Arrays.asList(array);
