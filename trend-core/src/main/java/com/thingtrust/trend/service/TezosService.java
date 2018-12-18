@@ -527,7 +527,7 @@ public class TezosService {
         stringBigDecimalMap
                 .forEach((address, amount) -> {
                     stringBuffer.append("spawn tezos-client transfer " + amount + " from payout to " + address + ";\r\n");
-                    stringBuffer.append("expect" + JSONObject.toJSONString(temp1) + "\r\n");
+                    stringBuffer.append("expect " + JSONObject.toJSONString(temp1) + "\r\n");
                     stringBuffer.append("send " + JSONObject.toJSONString(temp) + "\r\n");
                 });
         stringBuffer.append("interact");
