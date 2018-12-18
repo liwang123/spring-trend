@@ -521,7 +521,7 @@ public class TezosService {
                 .collect(Collectors
                         .toMap(Tezos::getDelegatorAddress, Tezos::getRevenue, (amountA, amountB) -> amountA.add(amountB)));
         final StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append("#!/bin/bash\r\n");
+        stringBuffer.append("#!/usr/bin/expect\r\n");
         final String temp = "\r";
         stringBigDecimalMap
                 .forEach((address, amount) -> {
