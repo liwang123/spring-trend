@@ -523,10 +523,11 @@ public class TezosService {
         final StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append("#!/usr/bin/expect\r\n");
         final String temp = "\r";
+        final String temp1 = "Enter password for encrypted key:";
         stringBigDecimalMap
                 .forEach((address, amount) -> {
                     stringBuffer.append("spawn tezos-client transfer " + amount + " from payout to " + address + ";\r\n");
-                    stringBuffer.append("expect 'Enter password for encrypted key:'\r\n");
+                    stringBuffer.append("expect" + JSONObject.toJSONString(temp1) + "\r\n");
                     stringBuffer.append("send " + JSONObject.toJSONString(temp) + "\r\n");
                 });
         stringBuffer.append("interact");
