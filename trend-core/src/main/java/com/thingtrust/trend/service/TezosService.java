@@ -529,8 +529,8 @@ public class TezosService {
                     stringBuffer.append("spawn tezos-client transfer " + amount + " from payout to " + address + ";\r\n");
                     stringBuffer.append("expect " + JSONObject.toJSONString(temp1) + "\r\n");
                     stringBuffer.append("send " + JSONObject.toJSONString(temp) + "\r\n");
+                    stringBuffer.append("interact" + "\r\n");
                 });
-        stringBuffer.append("interact");
         IOUtils.write(stringBuffer);
 //        final ScpClient instance = ScpClient.getInstance(hostUrl, port, account, password);
 //        final boolean putFile = instance.putFile(path, remotePath);
