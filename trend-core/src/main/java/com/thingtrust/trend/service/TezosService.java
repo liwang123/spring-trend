@@ -494,10 +494,11 @@ public class TezosService {
             return 1;
         }
         final TezosExample tezosExample = new TezosExample();
+        final int[] src = {2, 3, 4, 6};
+        final List<Integer> list = Arrays.stream(src).boxed().collect(Collectors.toList());
         tezosExample.createCriteria()
                 .andCycleEqualTo(cycle)
-                .andStatusEqualTo(1)
-                .andStatusEqualTo(5);
+                .andStatusNotIn(list);
         final List<Tezos> tezosList = tezosRepository.selectByExample(tezosExample);
         final BigDecimal feeD = new BigDecimal(100 - fee).divide(new BigDecimal(100));
         tezosList.stream()
